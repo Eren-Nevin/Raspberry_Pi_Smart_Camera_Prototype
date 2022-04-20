@@ -1,3 +1,6 @@
+# Sessions (e.g. Telegram Bot):
+*.session
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
