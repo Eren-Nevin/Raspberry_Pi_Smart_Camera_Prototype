@@ -40,6 +40,6 @@ def handle_text_message(client: Client, message: Message):
     raw_query = message.text
     chat_id = message.chat.id
     print(f"Query: {raw_query}")
-    handle_command(raw_query)
+    handle_command(raw_query, client, message)
 
 app.run()

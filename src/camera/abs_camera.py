@@ -9,6 +9,9 @@ class AbstractCamera(ABC):
     def stop(self):
         pass
 
+    def close(self):
+        pass
+
     def capture_still_to_local_file(self, filename: PosixPath):
         pass
 
