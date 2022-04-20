@@ -1,6 +1,15 @@
 # Sessions (e.g. Telegram Bot):
 *.session
 
+# Any video or image
+*.jpg
+*.jpeg
+*.png
+*.h264
+*.mp4
+*.mov
+*.ts
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
