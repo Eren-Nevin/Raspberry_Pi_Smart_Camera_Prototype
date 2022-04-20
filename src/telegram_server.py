@@ -6,6 +6,8 @@ from typing import Dict, List
 from pyrogram import Client, filters
 from pyrogram.types.messages_and_media.message import Message
 
+from user_command_handler import handle_command
+
 # THIS IS THE BOT TOKEN
 token = '5346807516:AAFyn5Uij3Al2gtQ3mHZ1Yp8DrDzwNslP1E'
 api_id = 19463946
@@ -37,7 +39,7 @@ def message_handler(client: Client, message: Message):
 def handle_text_message(client: Client, message: Message):
     raw_query = message.text
     chat_id = message.chat.id
-
     print(f"Query: {raw_query}")
+    handle_command(raw_query)
 
 app.run()
