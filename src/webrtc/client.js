@@ -11,11 +11,9 @@ var pc = null;
 var dc = null, dcInterval = null;
 
 function createPeerConnection() {
-    var config = {
-        sdpSemantics: 'unified-plan'
-    };
-    //
-    // let config = {}
+    let config = {}
+
+    // config[sdpSemantics] = 'unified-plan'
 
     if (document.getElementById('use-stun').checked) {
         config.createDataChannel = [{urls: ['stun:stun.l.google.com:19302']}];

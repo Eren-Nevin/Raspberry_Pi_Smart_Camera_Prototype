@@ -9,7 +9,6 @@ import os
 
 from aiohttp import web
 
-
 from aiortc import RTCPeerConnection, RTCSessionDescription
 
 # app = Flask(__name__, static_folder='./org', static_url_path='/')
@@ -18,6 +17,9 @@ logger = logging.getLogger("pc")
 pcs = set()
 
 ROOT = os.path.dirname(__file__)
+
+def log_info(msg, *args):
+    logger.info(pc_id + " " + msg, *args)
 
 async def index(request):
     content = open(os.path.join(ROOT, "index.html"), "r").read()
@@ -28,7 +30,6 @@ async def javascript(request):
     content = open(os.path.join(ROOT, "client.js"), "r").read()
     return web.Response(content_type="application/javascript", text=content)
 
-# @app.route('/offer', methods=['POST'])
 
 async def offer(request):
     params = await request.json()
@@ -46,11 +47,7 @@ async def offer(request):
     pc_id = f"PeerConnection{uuid.uuid4()}"
     pcs.add(pc)
 
-    def log_info(msg, *args):
-        logger.info(pc_id + " " + msg, *args)
-
     log_info("Created for %s", request.host)
-
     # PLAYER GOES HERE
 
     @pc.on("datachannel")
@@ -94,5 +91,5 @@ if __name__ == "__main__":
     app.router.add_get("/client.js", javascript)
     app.router.add_post("/offer", offer)
     web.run_app(
-        app, access_log=None, host='0.0.0.0', port=4322, ssl_context=None
+        app, access_log=None, host='dinkedpawn.com', port=4322, ssl_context=None
     )
