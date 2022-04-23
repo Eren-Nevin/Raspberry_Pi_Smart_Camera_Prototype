@@ -10,16 +10,40 @@ var pc = null;
 // data channel
 var dc = null, dcInterval = null;
 
-async function createPeerConnection() {
+function createPeerConnection() {
     var config = {
         sdpSemantics: 'unified-plan'
     };
+    //
+    // let config = {}
 
     if (document.getElementById('use-stun').checked) {
-        config.iceServers = [{urls: ['stun:stun.l.google.com:19302']}];
+        config.createDataChannel = [{urls: ['stun:stun.l.google.com:19302']}];
     }
 
     pc = new RTCPeerConnection(config);
+    // pc = new RTCPeerConnection({
+    //   iceServers: [
+    //     {
+    //       urls: "stun:openrelay.metered.ca:80",
+    //     },
+    //     {
+    //       urls: "turn:openrelay.metered.ca:80",
+    //       username: "openrelayproject",
+    //       credential: "openrelayproject",
+    //     },
+    //     {
+    //       urls: "turn:openrelay.metered.ca:443",
+    //       username: "openrelayproject",
+    //       credential: "openrelayproject",
+    //     },
+    //     {
+    //       urls: "turn:openrelay.metered.ca:443?transport=tcp",
+    //       username: "openrelayproject",
+    //       credential: "openrelayproject",
+    //     },
+    //   ],
+    // });
 
     // register some listeners to help debugging
     pc.addEventListener('icegatheringstatechange', function() {
@@ -91,6 +115,7 @@ async function negotiate() {
     //     offer.sdp = sdpFilterCodec('video', codec, offer.sdp);
     // }
         
+    document.getElementById('offer-sdp').textContent = offer.sdp
     let response = await fetch('/offer', {
             body: JSON.stringify({
                 sdp: offer.sdp,
@@ -105,10 +130,10 @@ async function negotiate() {
 
 
     let answer = await response.json()
-    console.log(answer)
+    // console.log(answer)
 
     document.getElementById('answer-sdp').textContent = answer.sdp;
-    await pc.setRemoteDescription(answer)
+    return await pc.setRemoteDescription(answer)
     }
     catch (error) {
         alert(error)
@@ -118,11 +143,10 @@ async function negotiate() {
 
 }
 
-async function start() {
-    console.log("Start Clicked")
+function start() {
     document.getElementById('start').style.display = 'none';
 
-    pc = await createPeerConnection();
+    pc = createPeerConnection();
 
     var time_start = null;
 
@@ -161,41 +185,7 @@ async function start() {
         };
     }
 
-    await negotiate()
-
-    // var constraints = {
-    //     audio: document.getElementById('use-audio').checked,
-    //     video: false
-    // };
-
-    // if (document.getElementById('use-video').checked) {
-    //     var resolution = document.getElementById('video-resolution').value;
-    //     if (resolution) {
-    //         resolution = resolution.split('x');
-    //         constraints.video = {
-    //             width: parseInt(resolution[0], 0),
-    //             height: parseInt(resolution[1], 0)
-    //         };
-    //     } else {
-    //         constraints.video = true;
-    //     }
-    // }
-
-    // if (constraints.audio || constraints.video) {
-    //     if (constraints.video) {
-    //         document.getElementById('media').style.display = 'block';
-    //     }
-    //     navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-    //         stream.getTracks().forEach(function(track) {
-    //             pc.addTrack(track, stream);
-    //         });
-    //         return negotiate();
-    //     }, function(err) {
-    //         alert('Could not acquire media: ' + err);
-    //     });
-    // } else {
-    //     negotiate();
-    // }
+    negotiate()
 
     document.getElementById('stop').style.display = 'inline-block';
 }
