@@ -39,7 +39,7 @@
     </select>
 </div>
 <div class="option">
-    <input id="use-audio" checked="checked" type="checkbox"/>
+    <input id="use-audio" type="checkbox"/>
     <label for="use-audio">Use audio</label>
     <select id="audio-codec">
         <option value="default" selected>Default codecs</option>
@@ -71,12 +71,22 @@
     </select>
 </div>
 <div class="option">
-    <input id="use-stun" type="checkbox"/>
+    <input id="use-stun" checked="checked" type="checkbox"/>
     <label for="use-stun">Use STUN server</label>
 </div>
 
-<button id="start" onclick="start()">Start</button>
-<button id="stop" style="display: none" onclick="stop()">Stop</button>
+<input type='text' placeholder="Enter Your ID" id='uid'>
+<input type='text' placeholder="Enter Destiation ID" id='destination_uid'>
+
+<!-- <button id="available" onclick="available()">Available</button> -->
+<!-- <button id="unavailable" style="display: none" onclick="unavailable()">Unavailable</button> -->
+
+<button id="call-button"
+    onclick="callPeer()">Call</button>
+<!-- <button id="answer-button" style="display: none" -->
+<!--                            onclick="answerCaller()">Answer<button> -->
+<!-- <button id="start" onclick="start()">Start</button> -->
+<!-- <button id="stop" style="display: none" onclick="stop()">Stop</button> -->
 
 <h2>State</h2>
 <p>
@@ -107,6 +117,7 @@
 <h3>Answer</h3>
 <pre id="answer-sdp"></pre>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" crossorigin="anonymous"></script>
 <script src="client.js"></script>
 </body>
 </html>
