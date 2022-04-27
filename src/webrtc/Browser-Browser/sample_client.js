@@ -1,17 +1,17 @@
 var dataChannelLog = document.getElementById("data-channel"),
   iceConnectionLog = document.getElementById("ice-connection-state"),
   iceGatheringLog = document.getElementById("ice-gathering-state"),
-  signalingLog = document.getElementById("signaling-state");
-uidTextBox = document.getElementById("uid");
-destUidTextBox = document.getElementById("destination_uid");
-callButton = document.getElementById("call-button");
+  signalingLog = document.getElementById("signaling-state"),
+  uidTextBox = document.getElementById("uid"),
+  destUidTextBox = document.getElementById("destination_uid"),
+  callButton = document.getElementById("call-button");
 
 let socket = null;
 
 const STUN_SERVERS = ["stun:stun.l.google.com:19302"];
 
-const SIGNALING_SERVER = '127.0.0.1:4311'
-const SIGNALING_SERVER_SOCKETIO_NAMESPACE = 'my_namespace'
+const SIGNALING_SERVER = "127.0.0.1:4311";
+const SIGNALING_SERVER_SOCKETIO_NAMESPACE = "my_namespace";
 
 class OfferOrAnswer {
   uid;
@@ -40,8 +40,6 @@ class IceCandidate {
 }
 
 var active_pc = null;
-let pc_used_for_call = null;
-let pc_used_for_answer = null;
 
 function readUID() {
   return uidTextBox.value;
@@ -83,6 +81,34 @@ function setSocketEventListeners() {
   });
 }
 
+// This function is not used by default but can be used to disable ice trickling
+// if we know beforehand (or using our signaling system) that the remote peer
+// doesn't support trickling
+async function waitForIceGathering(){
+    let promise = new Promise(function(resolve) {
+            if (pc.iceGatheringState === 'complete') {
+                resolve();
+            } else {
+                function checkState() {
+                    if (pc.iceGatheringState === 'complete') {
+                        pc.removeEventListener('icegatheringstatechange', checkState);
+                        resolve();
+                    }
+                }
+                pc.addEventListener('icegatheringstatechange', checkState);
+            }
+    })
+
+    await promise
+    return
+
+}
+
+// Note that here we are using the default way of sending and receiving ice
+// candidates which is known as ice trickling. This means we are not waiting for
+// the ice gathering before sending the offer. We could use waitForIceGathering
+// function before createing the creating the offer object if we wanted to
+// disable ice trickling
 async function handleNegotiationNeededEvent() {
   console.log("Negotiation Needed");
   try {
@@ -131,14 +157,6 @@ function handleICEConnectionStateChangeEvent(event) {
     "*** ICE connection state changed to " + active_pc.iceConnectionState
   );
   iceConnectionLog.textContent += " -> " + active_pc.iceConnectionState;
-
-  // switch(active_pc.iceConnectionState) {
-  //   case "closed":
-  //   case "failed":
-  //   case "disconnected":
-  //     closeVideoCall();
-  //     break;
-  // }
 }
 
 function handleSignalingStateChangeEvent(event) {
@@ -179,40 +197,26 @@ async function createPeerConnection() {
   );
   active_pc.addEventListener("datachannel", (ev) => {
     receiveChannel = ev.channel;
-      receiveChannel.onmessage = (evt) => {
-            dataChannelLog.textContent += "< " + evt.data + "\n";
-          receiveChannel.send("Pong")
-      }
-    receiveChannel.onopen = onDataMessageOpen
-    receiveChannel.onclose = onDataMessageClose
+    receiveChannel.onmessage = (evt) => {
+      dataChannelLog.textContent += "< " + evt.data + "\n";
+      receiveChannel.send("Pong");
+    };
+    receiveChannel.onopen = onDataMessageOpen;
+    receiveChannel.onclose = onDataMessageClose;
   });
   console.log("Active PC Created!");
 }
 
-function onDataMessage(evt){
-    dataChannelLog.textContent += "< " + evt.data + "\n";
-    // if (evt.data === 'Ping'){
-    //     evt.channel.send("Pong")
-    // }
-    // if (evt.data.substring(0, 4) === "pong") {
-    //   var elapsed_ms =
-    //     current_stamp() - parseInt(evt.data.substring(5), 10);
-    //   dataChannelLog.textContent += " RTT " + elapsed_ms + " ms\n";
-
+function onDataMessage(evt) {
+  dataChannelLog.textContent += "< " + evt.data + "\n";
 }
 
-function onDataMessageOpen(){
-    dataChannelLog.textContent += "- open\n";
-    // dcInterval = setInterval(function () {
-    //   var message = "ping " + current_stamp();
-    //   dataChannelLog.textContent += "> " + message + "\n";
-    //   dc.send(message);
-    // }, 1000);
+function onDataMessageOpen() {
+  dataChannelLog.textContent += "- open\n";
 }
 
-function onDataMessageClose(){
-    // clearInterval(dcInterval);
-    dataChannelLog.textContent += "- close\n";
+function onDataMessageClose() {
+  dataChannelLog.textContent += "- close\n";
 }
 
 async function callPeer() {
@@ -246,8 +250,6 @@ async function callPeer() {
         }
       };
     }
-
-    // return await pc
   } catch (e) {
     console.log(e);
   }
@@ -328,7 +330,7 @@ async function newIceCandidateReceived(iceCandidateJson) {
       iceCandidateJson["con_type"]
     );
 
-    console.log(candidate)
+    console.log(candidate);
 
     if (candidate.d_uid == readUID()) {
       // TODO: Do we need to create this object or the answer itself was
@@ -336,8 +338,6 @@ async function newIceCandidateReceived(iceCandidateJson) {
 
       let receivedCandidate = new RTCIceCandidate(candidate.candidate);
       await active_pc.addIceCandidate(receivedCandidate);
-      // document.getElementById("answer-sdp").textContent = answer.sdp;
-      // await active_pc.setRemoteDescription(receivedDescription);
     }
   } catch (e) {
     console.log(e);

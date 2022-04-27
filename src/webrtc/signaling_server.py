@@ -1,12 +1,9 @@
 from pprint import pprint
-import argparse
 import asyncio
 import ssl
 import json
 import logging
-import uuid
-import os
-from typing import Dict, List
+import sys
 
 # from aiohttp import web
 # ROOT = os.path.dirname(__file__)
@@ -19,9 +16,6 @@ from flask_socketio import SocketIO, emit, send, leave_room, join_room, \
 # TODO: Add more error handling
 
 
-logger = logging.getLogger("pc")
-
-
 class Offer:
     def __init__(self, uid, d_uid, sdp, con_type):
         self.uid = uid
@@ -32,13 +26,10 @@ class Offer:
     def __repr__(self):
         return f"{self.uid} to {self.d_uid}\n{self.sdp}\n*\n{self.con_type}"
 
-offers: List[Offer] = []
-
-def log_info(msg, *args):
-    logger.info(pc_id + " " + msg, *args)
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='/')
 app.config['SECRET_KEY'] = 'SOCKET_IO_SECRET_KEY'
+
+socket_io_namespace = sys.argv[1]
 
 socketio = SocketIO(app, logger=True,
                     # engineio_logger=True,
@@ -48,28 +39,28 @@ socketio = SocketIO(app, logger=True,
 print("Started Websocket")
 try:
 
-    @socketio.on('connect', namespace='/my_namespace')
-    def on_connection():
+    @socketio.on('connect', namespace=f"/{socket_io_namespace}")
+    def on_connect():
         print("Connection Request")
         join_room('public')
 
-    @socketio.on('disconnect', namespace='/my_namespace')
-    def on_connection():
+    @socketio.on('disconnect', namespace=f"/{socket_io_namespace}")
+    def on_disonnect():
         print("Connection Disconnected")
         leave_room('public')
 
-    @socketio.on('offer', namespace='/my_namespace')
-    def handle_message(message):
+    @socketio.on('offer', namespace=f"/{socket_io_namespace}")
+    def handle_offer(message):
         pprint(message)
         emit('new_offer', message, to='public')
 
-    @socketio.on('answer', namespace='/my_namespace')
-    def handle_message(message):
+    @socketio.on('answer', namespace=f"/{socket_io_namespace}")
+    def handle_answer(message):
         pprint(message)
         emit('new_answer', message, to='public')
 
-    @socketio.on('new_ice_candidate', namespace='/my_namespace')
-    def handle_message(message):
+    @socketio.on('new_ice_candidate', namespace=f"/{socket_io_namespace}")
+    def handle_ice_candidate(message):
         pprint(message)
         emit('new_ice_candidate', message, to='public', include_self=False)
 
