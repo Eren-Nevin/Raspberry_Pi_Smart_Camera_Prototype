@@ -44,6 +44,9 @@ class IceCandidate {
 function getSignalingServerAddress() {
   return signalingServerAddressTextBox.value;
 }
+function getSignalingServerAddress(){
+    return signalingServerAddressTextBox.value
+}
 
 function readUID() {
   return uidTextBox.value;
@@ -242,6 +245,7 @@ function onDataMessageClose() {
 
 async function callPeer() {
   try {
+      await start()
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
 
@@ -300,5 +304,3 @@ async function start() {
   connectSocket();
   // await createPeerConnection()
 }
-
-start();
