@@ -5,12 +5,9 @@ import asyncio
 from aiortc import RTCPeerConnection, RTCSessionDescription, RTCIceCandidate
 from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
 from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
-from aiortc.contrib.media import MediaPlayer, MediaRelay
-from aiortc.rtcrtpsender import RTCRtpSender
 import socketio
 import time
 import sys
-import platform
 # from socketio import namespace
 
 def getUID():
@@ -40,24 +37,7 @@ SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
 sio = socketio.AsyncClient()
 
 
-def create_media_stream_track():
-# Test video stream track based on local video file
-# player = MediaPlayer('./sample_video.mp4')
-# return player.video
 
-    options = {"framerate": "30", "video_size": "1280x720"}
-    if platform.system() == "Darwin":
-            webcam = MediaPlayer(
-                "default:none", format="avfoundation", options=options
-            )
-    elif platform.system() == "Windows":
-        webcam = MediaPlayer(
-            "video=Integrated Camera", format="dshow", options=options
-        )
-    else:
-        webcam = MediaPlayer("/dev/video0", format="v4l2", options=options)
-    relay = MediaRelay()
-    return relay.subscribe(webcam.video)
 
 async def createRTCConnection():
     global pc
@@ -66,9 +46,6 @@ async def createRTCConnection():
     rtc_server = RTCIceServer('stun:stun.l.google.com:19302')
     rtc_config = RTCConfiguration([rtc_server])
     pc = RTCPeerConnection(rtc_config)
-
-    
-    # TODO: Do we need to force codec?
 
     @pc.on("datachannel")
     def on_datachannel(channel):
@@ -80,12 +57,16 @@ async def createRTCConnection():
         @channel.on("message")
         def on_message(message):
             pprint(f"Data Message: {message}")
+            # if isinstance(message, str) and message.startswith("ping"):
+            #     channel.send("pong" + message[4:])
 
     @pc.on("connectionstatechange")
     async def on_connectionstatechange():
         pprint(f"Connection state is {pc.connectionState}")
         if pc.connectionState == "failed":
             await pc.close()
+        elif pc.connectionState == 'connected':
+            print("Connected !!!!!")
 
     @pc.on("iceconnectionstatechange")
     async def on_ice_connection_state_change():
@@ -94,6 +75,15 @@ async def createRTCConnection():
     @pc.on("icegatheringstatechange")
     async def on_ice_gathering_state_change():
         pprint(f"Ice Gathering State is {pc.iceGatheringState}")
+        if pc.iceGatheringState == 'complete':
+            candidates = pc.sctp.transport.transport.iceGatherer.getLocalCandidates()
+            print(len(candidates))
+            # for m_candidate in candidates:
+            #     candidate = IceCandidate(getUID(), getDUID(),
+            #                              candidate_to_sdp(m_candidate),
+            #                              'new_ice_candidate')
+            #     await sio.emit('new_ice_candidate', asdict(candidate),
+            #                    namespace=SOCKET_IO_NAMESPACE)
 
     @pc.on("signalingstatechange")
     async def on_ice_gathering_state_change():
@@ -110,21 +100,31 @@ async def start_client():
 
     await sio.wait()
 
+async def newIceCandidateReceived(message):
+    candidate = message
+    # if int(candidate['d_uid']) != getUID():
+    #     return
+
+    # my_candidate = candidate_from_sdp(candidate['candidate']['candidate'])
+    # my_candidate.sdpMid = candidate['candidate']['sdpMid']
+    # my_candidate.sdpMLineIndex = candidate['candidate']['sdpMLineIndex']
+    # await pc.addIceCandidate(my_candidate)
+
+
 async def newOfferReceived(message):
     offer = message
+    # pprint(f"Offer is: {offer}")
     if int(offer['d_uid']) != getUID():
         pprint("Offer not mine")
         return
+    # Check for presence of keys
 
-    video_sender = pc.addTrack(create_media_stream_track())
+    # print(received_offer_sdp)
 
-    # codecs = RTCRtpSender.getCapabilities('video').codecs
-    # pprint(codecs)
-    # pprint(pc.getTransceivers())
-
-
-    print("Creating SDP")
     offerSDP = RTCSessionDescription(sdp=offer['sdp'], type=offer['con_type'])
+
+    # pc_id = f"PeerConnection{uuid.uuid4()}"
+    # pcs.add(pc)
 
     pprint("Created RTC Connection")
     # PLAYER GOES HERE
@@ -140,8 +140,10 @@ async def newOfferReceived(message):
 
     await pc.setLocalDescription(answer)
 
+    # await sio.emit('new_ice_candidate', asdict(candidate), namespace=SOCKET_IO_NAMESPACE)
     my_answer = OfferOrAnswer(getUID(), getDUID(), pc.localDescription.sdp,
                               pc.localDescription.type)
+    # pprint(f"My Answer is {my_answer}")
 
     await sio.emit('answer', asdict(my_answer), namespace=SOCKET_IO_NAMESPACE)
 
@@ -162,7 +164,13 @@ try:
 
     @sio.on('new_offer', namespace=SOCKET_IO_NAMESPACE)
     async def on_new_offer(message):
+        # pprint(message)
         await newOfferReceived(message)
+
+    @sio.on('new_ice_candidate', namespace=SOCKET_IO_NAMESPACE)
+    async def on_new_ice_candidate(message):
+        pprint(message)
+        await newIceCandidateReceived(message)
 
     if __name__ == "__main__":
         asyncio.run(start_client())

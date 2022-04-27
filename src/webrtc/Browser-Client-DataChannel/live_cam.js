@@ -1,10 +1,7 @@
-let signalingServerAddressTextBox = document.getElementById(
-  "signaling-server-address"
-);
+let signalingServerAddressTextBox = 
+    document.getElementById("signaling-server-address");
 let uidTextBox = document.getElementById("uid");
 let destUidTextBox = document.getElementById("destination_uid");
-
-let videoElement = document.getElementById('video')
 
 let socket = null;
 let active_pc = null;
@@ -41,8 +38,8 @@ class IceCandidate {
   }
 }
 
-function getSignalingServerAddress() {
-  return signalingServerAddressTextBox.value;
+function getSignalingServerAddress(){
+    return signalingServerAddressTextBox.value
 }
 
 function readUID() {
@@ -54,7 +51,7 @@ function readDestUID() {
 }
 
 function createSocketIO() {
-  serverAddress = getSignalingServerAddress();
+    serverAddress = getSignalingServerAddress()
   socket = io(`${serverAddress}/${SIGNALING_SERVER_SOCKETIO_NAMESPACE}`, {
     transports: ["websocket"],
     autoConnect: false,
@@ -68,7 +65,7 @@ function connectSocket() {
 function setSocketEventListeners() {
   socket.on("connect", () => {
     console.log("Connected To Websocket");
-  });
+r });
 
   socket.on("new_answer", async (message) => {
     // console.log(message);
@@ -89,23 +86,24 @@ function setSocketEventListeners() {
 // This is here to cancel ice trickling by waiting for all candidates to be
 // gathered before creating the offer. We're doing this because aiortc doesn't
 // support ice trickling for now
-async function waitForIceGathering() {
-  let promise = new Promise(function (resolve) {
-    if (active_pc.iceGatheringState === "complete") {
-      resolve();
-    } else {
-      function checkState() {
-        if (active_pc.iceGatheringState === "complete") {
-          active_pc.removeEventListener("icegatheringstatechange", checkState);
-          resolve();
-        }
-      }
-      active_pc.addEventListener("icegatheringstatechange", checkState);
-    }
-  });
+async function waitForIceGathering(){
+    let promise = new Promise(function(resolve) {
+            if (active_pc.iceGatheringState === 'complete') {
+                resolve();
+            } else {
+                function checkState() {
+                    if (active_pc.iceGatheringState === 'complete') {
+                        active_pc.removeEventListener('icegatheringstatechange', checkState);
+                        resolve();
+                    }
+                }
+                active_pc.addEventListener('icegatheringstatechange', checkState);
+            }
+    })
 
-  await promise;
-  return;
+    await promise
+    return
+
 }
 async function handleNegotiationNeededEvent() {
   console.log("Negotiation Needed");
@@ -119,10 +117,11 @@ async function handleNegotiationNeededEvent() {
     console.log("---> Setting local description to the offer");
     await active_pc.setLocalDescription(new_offer);
 
-    // Waiting for all ice candidates to arrive so that our local description
-    // contains them all meaning no new ice candidate would be found after our
-    // initial offer. This is for disabling ice trickling.
-    await waitForIceGathering();
+      // Waiting for all ice candidates to arrive so that our local description
+      // contains them all meaning no new ice candidate would be found after our
+      // initial offer. This is for disabling ice trickling.
+    await waitForIceGathering()
+
 
     let offer = new OfferOrAnswer(
       readUID(),
@@ -217,14 +216,6 @@ async function createPeerConnection() {
     data_channel.onopen = onDataMessageOpen;
     data_channel.onclose = onDataMessageClose;
   });
-
-    // This sets that this connection has capacity to receive video
-active_pc.addTransceiver('video', {direction: 'recvonly'})
-
-    active_pc.addEventListener('track', (evt) => {
-        videoElement.srcObject = evt.streams[0]
-    })
-
   console.log("Active PC Created!");
 }
 
@@ -256,6 +247,7 @@ async function callPeer() {
     console.log(e);
   }
 }
+
 
 async function newAnswerReceived(answerJson) {
   try {
@@ -302,3 +294,78 @@ async function start() {
 }
 
 start();
+
+// Here are not needed functions.
+
+// Since the client library we use for camera doesn't support trickle ice, it
+// doesn't send its ice candidates progressively but it sends them all at once
+// in form of its answer to our offer. This is why we don't need to listen to
+// new_ice_candidate events of our signaling system.
+// async function newIceCandidateReceived(iceCandidateJson) {
+//   try {
+//     let candidate = new IceCandidate(
+//       iceCandidateJson["uid"],
+//       iceCandidateJson["d_uid"],
+//       iceCandidateJson["candidate"],
+//       iceCandidateJson["con_type"]
+//     );
+
+//     // console.log(candidate);
+
+//     if (candidate.d_uid == readUID()) {
+//       // TODO: Do we need to create this object or the answer itself was
+//       // sufficient
+
+
+//       let receivedCandidate = new RTCIceCandidate(candidate.candidate);
+//       await active_pc.addIceCandidate(receivedCandidate);
+//     }
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// Our current architecture is that the we offer connectio to our camera client.
+// This is why we don't need to listen on any new offer received but only on
+// answers.
+// async function newOfferReceived(offerJson) {
+//   try {
+//     let offer = new OfferOrAnswer(
+//       offerJson["uid"],
+//       offerJson["d_uid"],
+//       offerJson["sdp"],
+//       offerJson["con_type"]
+//     );
+
+//     console.log("Offer is:");
+//     console.log(offer);
+//     // The call is for us
+//     if (offer.d_uid === readUID()) {
+//       // if (!active_pc){
+//       await createPeerConnection();
+//       // }
+//       // document.getElementById("offer-sdp").textContent = offer.sdp;
+//       console.log(`OFFER IS FOR ME ${readUID()}`);
+//       // TODO: Do we need to create this object or the answer itself was
+//       // sufficient
+//       let receivedDescription = new RTCSessionDescription({
+//         sdp: offer.sdp,
+//         type: offer.con_type,
+//       });
+//       await active_pc.setRemoteDescription(receivedDescription);
+//       answer = await active_pc.createAnswer();
+//       await active_pc.setLocalDescription(answer);
+//       let my_answer = new OfferOrAnswer(
+//         readUID(),
+//         readDestUID(),
+//         answer.sdp,
+//         answer.type
+//       );
+//       console.log("My Answer is");
+//       console.log(my_answer);
+//       socket.emit("answer", my_answer);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
