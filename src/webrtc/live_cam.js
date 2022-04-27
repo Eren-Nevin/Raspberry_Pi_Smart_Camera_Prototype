@@ -39,6 +39,8 @@ class IceCandidate {
 }
 
 function getSignalingServerAddress(){
+    console.log(signalingServerAddressTextBox.text)
+    console.log(signalingServerAddressTextBox.value)
     return signalingServerAddressTextBox.value
 }
 
@@ -65,7 +67,7 @@ function connectSocket() {
 function setSocketEventListeners() {
   socket.on("connect", () => {
     console.log("Connected To Websocket");
-r });
+ });
 
   socket.on("new_answer", async (message) => {
     // console.log(message);
@@ -233,6 +235,7 @@ function onDataMessageClose() {
 
 async function callPeer() {
   try {
+      await start()
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
 
@@ -292,8 +295,6 @@ async function start() {
   connectSocket();
   // await createPeerConnection()
 }
-
-start();
 
 // Here are not needed functions.
 
