@@ -1,17 +1,13 @@
 from pprint import pprint
-import json
 from dataclasses import dataclass, asdict
 import asyncio
-from aiortc import RTCPeerConnection, RTCSessionDescription, RTCIceCandidate
-from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
+import sys
+
+import socketio
+from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
 from aiortc.contrib.media import MediaPlayer, MediaRelay
-from aiortc.rtcrtpsender import RTCRtpSender
-import socketio
-import time
-import sys
-import platform
-# from socketio import namespace
+# from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
 
 def getUID():
     return 2
@@ -39,25 +35,16 @@ SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
 
 sio = socketio.AsyncClient()
 
-
+# We can use the picamera module to create a recording based on our specific
+# needs and stream it somehow (e.g. socket, BytesIO, ...) to MediaPlayer class.
+# Currently, since we're behind schedule, we are reading directly from source
+# device.
+# Note that the buffered=False is the reason we can stream virtually lag free
 def create_media_stream_track():
-# Test video stream track based on local video file
-# player = MediaPlayer('./sample_video.mp4')
-# return player.video
-
     options = {"framerate": "30", "video_size": "1280x720"}
-    if platform.system() == "Darwin":
-            webcam = MediaPlayer(
-                "default:none", format="avfoundation", options=options
-            )
-    elif platform.system() == "Windows":
-        webcam = MediaPlayer(
-            "video=Integrated Camera", format="dshow", options=options
-        )
-    else:
-        webcam = MediaPlayer("/dev/video0", format="v4l2", options=options)
+    webcam = MediaPlayer("/dev/video0", format="v4l2", options=options)
     relay = MediaRelay()
-    return relay.subscribe(webcam.video)
+    return relay.subscribe(webcam.video, buffered=False)
 
 async def createRTCConnection():
     global pc
