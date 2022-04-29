@@ -6,11 +6,9 @@ import logging
 import sys
 
 # from aiohttp import web
-# ROOT = os.path.dirname(__file__)
 
-from flask import Flask, request
-from flask_socketio import SocketIO, emit, send, leave_room, join_room, \
-    disconnect
+from flask import Flask, request, render_template, send_file
+from flask_socketio import SocketIO, emit, send, leave_room, join_room
 
 # TODO: Write this either using websocket or a signaling system
 # TODO: Add more error handling
@@ -26,7 +24,8 @@ class Offer:
     def __repr__(self):
         return f"{self.uid} to {self.d_uid}\n{self.sdp}\n*\n{self.con_type}"
 
-app = Flask(__name__, static_folder='.', static_url_path='/')
+# app = Flask(__name__, static_folder='.', static_url_path='/')
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SOCKET_IO_SECRET_KEY'
 
 socket_io_namespace = sys.argv[1]
@@ -35,6 +34,23 @@ socketio = SocketIO(app, logger=True,
                     # engineio_logger=True,
                     cors_allowed_origins="*",
                     )
+@app.route('/')
+def index():
+    m_response = send_file('./live_cam.html', etag=False)
+    m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    m_response.headers["Expires"] = '0'
+    m_response.headers["Pragma"] = "no-cache"
+    return m_response
+    # return render_template('live_cam.html')
+    # return "Hello World"
+
+@app.route('/live_cam.js')
+def serve_js():
+    m_response = send_file('./live_cam.js', etag=False)
+    m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    m_response.headers["Expires"] = '0'
+    m_response.headers["Pragma"] = "no-cache"
+    return m_response
 
 print("Started Websocket")
 try:
@@ -69,3 +85,4 @@ except Exception:
 
 if __name__ == "__main__":
     socketio.run(app, '0.0.0.0', 4311)
+    # app.run('0.0.0.0', 4311)

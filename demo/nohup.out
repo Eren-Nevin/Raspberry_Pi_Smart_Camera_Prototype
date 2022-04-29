@@ -1,0 +1,1031 @@
+Started Websocket
+ * Serving Flask app 'signaling_server' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+Address already in use
+Port 4311 is in use by another program. Either identify and stop that program, or start the server with a different port.
+Started Websocket
+ * Serving Flask app 'signaling_server' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:4311
+ * Running on http://157.90.139.101:4311 (Press CTRL+C to quit)
+9jQXpL-7NgTCvX_eAAAB is entering room public [/live_cam]
+Connection Request
+Started Websocket
+ * Serving Flask app 'signaling_server' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:4311
+ * Running on http://157.90.139.101:4311 (Press CTRL+C to quit)
+vKehzbyCEPQ-G_sQAAAB is entering room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 08:24:49] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:24:49] "GET /live_cam.js HTTP/1.1" 304 -
+9DH9iVF04vsoqJuDAAAD is entering room public [/live_cam]
+received event "offer" from 9DH9iVF04vsoqJuDAAAD [/live_cam]
+emitting event "new_offer" to public [/live_cam]
+received event "answer" from vKehzbyCEPQ-G_sQAAAB [/live_cam]
+Connection Request
+Connection Request
+{'con_type': 'offer',
+ 'd_uid': 2,
+ 'sdp': 'v=0\r\n'
+        'o=- 8507596230770171643 2 IN IP4 127.0.0.1\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=extmap-allow-mixed\r\n'
+        'a=msid-semantic: WMS\r\n'
+        'm=video 15802 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 '
+        '125 107 108 109 35 36 37 38 124 121 120 119 114 39\r\n'
+        'c=IN IP4 176.237.13.213\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=candidate:1217912257 1 udp 2113937151 10.201.21.110 47512 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.237.13.213 15802 typ srflx '
+        'raddr 10.201.21.110 rport 47512 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:rFvg\r\n'
+        'a=ice-pwd:lVg8abdO/qAuVxxdZuPUT94L\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '8C:3C:77:21:B4:DD:29:6A:EC:0B:12:79:06:79:EF:0D:C1:C1:D3:F0:F8:FD:0D:A1:C0:B9:44:E9:13:19:D9:63\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:0\r\n'
+        'a=extmap:1 urn:ietf:params:rtp-hdrext:toffset\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:3 urn:3gpp:video-orientation\r\n'
+        'a=extmap:4 '
+        'http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n'
+        'a=extmap:5 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n'
+        'a=extmap:6 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\n'
+        'a=extmap:7 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\n'
+        'a=extmap:8 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\n'
+        'a=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\n'
+        'a=recvonly\r\n'
+        'a=rtcp-mux\r\n'
+        'a=rtcp-rsize\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtcp-fb:96 transport-cc\r\n'
+        'a=rtcp-fb:96 ccm fir\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:98 VP9/90000\r\n'
+        'a=rtcp-fb:98 goog-remb\r\n'
+        'a=rtcp-fb:98 transport-cc\r\n'
+        'a=rtcp-fb:98 ccm fir\r\n'
+        'a=rtcp-fb:98 nack\r\n'
+        'a=rtcp-fb:98 nack pli\r\n'
+        'a=fmtp:98 profile-id=0\r\n'
+        'a=rtpmap:99 rtx/90000\r\n'
+        'a=fmtp:99 apt=98\r\n'
+        'a=rtpmap:100 VP9/90000\r\n'
+        'a=rtcp-fb:100 goog-remb\r\n'
+        'a=rtcp-fb:100 transport-cc\r\n'
+        'a=rtcp-fb:100 ccm fir\r\n'
+        'a=rtcp-fb:100 nack\r\n'
+        'a=rtcp-fb:100 nack pli\r\n'
+        'a=fmtp:100 profile-id=1\r\n'
+        'a=rtpmap:101 rtx/90000\r\n'
+        'a=fmtp:101 apt=100\r\n'
+        'a=rtpmap:102 VP9/90000\r\n'
+        'a=rtcp-fb:102 goog-remb\r\n'
+        'a=rtcp-fb:102 transport-cc\r\n'
+        'a=rtcp-fb:102 ccm fir\r\n'
+        'a=rtcp-fb:102 nack\r\n'
+        'a=rtcp-fb:102 nack pli\r\n'
+        'a=fmtp:102 profile-id=2\r\n'
+        'a=rtpmap:123 rtx/90000\r\n'
+        'a=fmtp:123 apt=102\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=rtcp-fb:127 transport-cc\r\n'
+        'a=rtcp-fb:127 ccm fir\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:125 H264/90000\r\n'
+        'a=rtcp-fb:125 goog-remb\r\n'
+        'a=rtcp-fb:125 transport-cc\r\n'
+        'a=rtcp-fb:125 ccm fir\r\n'
+        'a=rtcp-fb:125 nack\r\n'
+        'a=rtcp-fb:125 nack pli\r\n'
+        'a=fmtp:125 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\n'
+        'a=rtpmap:107 rtx/90000\r\n'
+        'a=fmtp:107 apt=125\r\n'
+        'a=rtpmap:108 H264/90000\r\n'
+        'a=rtcp-fb:108 goog-remb\r\n'
+        'a=rtcp-fb:108 transport-cc\r\n'
+        'a=rtcp-fb:108 ccm fir\r\n'
+        'a=rtcp-fb:108 nack\r\n'
+        'a=rtcp-fb:108 nack pli\r\n'
+        'a=fmtp:108 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\n'
+        'a=rtpmap:109 rtx/90000\r\n'
+        'a=fmtp:109 apt=108\r\n'
+        'a=rtpmap:35 H264/90000\r\n'
+        'a=rtcp-fb:35 goog-remb\r\n'
+        'a=rtcp-fb:35 transport-cc\r\n'
+        'a=rtcp-fb:35 ccm fir\r\n'
+        'a=rtcp-fb:35 nack\r\n'
+        'a=rtcp-fb:35 nack pli\r\n'
+        'a=fmtp:35 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f\r\n'
+        'a=rtpmap:36 rtx/90000\r\n'
+        'a=fmtp:36 apt=35\r\n'
+        'a=rtpmap:37 AV1/90000\r\n'
+        'a=rtcp-fb:37 goog-remb\r\n'
+        'a=rtcp-fb:37 transport-cc\r\n'
+        'a=rtcp-fb:37 ccm fir\r\n'
+        'a=rtcp-fb:37 nack\r\n'
+        'a=rtcp-fb:37 nack pli\r\n'
+        'a=rtpmap:38 rtx/90000\r\n'
+        'a=fmtp:38 apt=37\r\n'
+        'a=rtpmap:124 H264/90000\r\n'
+        'a=rtcp-fb:124 goog-remb\r\n'
+        'a=rtcp-fb:124 transport-cc\r\n'
+        'a=rtcp-fb:124 ccm fir\r\n'
+        'a=rtcp-fb:124 nack\r\n'
+        'a=rtcp-fb:124 nack pli\r\n'
+        'a=fmtp:124 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+        'a=rtpmap:121 rtx/90000\r\n'
+        'a=fmtp:121 apt=124\r\n'
+        'a=rtpmap:120 red/90000\r\n'
+        'a=rtpmap:119 rtx/90000\r\n'
+        'a=fmtp:119 apt=120\r\n'
+        'a=rtpmap:114 ulpfec/90000\r\n'
+        'a=rtpmap:39 flexfec-03/90000\r\n'
+        'a=rtcp-fb:39 goog-remb\r\n'
+        'a=rtcp-fb:39 transport-cc\r\n'
+        'a=fmtp:39 repair-window=10000000\r\n'
+        'm=application 16008 UDP/DTLS/SCTP webrtc-datachannel\r\n'
+        'c=IN IP4 176.237.13.213\r\n'
+        'a=candidate:1217912257 1 udp 2113937151 10.201.21.110 47508 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.237.13.213 16008 typ srflx '
+        'raddr 10.201.21.110 rport 47508 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:rFvg\r\n'
+        'a=ice-pwd:lVg8abdO/qAuVxxdZuPUT94L\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '8C:3C:77:21:B4:DD:29:6A:EC:0B:12:79:06:79:EF:0D:C1:C1:D3:F0:F8:FD:0D:A1:C0:B9:44:E9:13:19:D9:63\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:1\r\n'
+        'a=sctp-port:5000\r\n'
+        'a=max-message-size:262144\r\n',
+ 'uid': 1}
+{'con_type': 'answer',
+ 'd_uid': 1,
+ 'sdp': 'v=0\r\n'
+        'o=- 3860209492 3860209492 IN IP4 0.0.0.0\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=msid-semantic:WMS *\r\n'
+        'm=video 53788 UDP/TLS/RTP/SAVPF 96 97 127 122 124 121\r\n'
+        'c=IN IP4 192.168.1.22\r\n'
+        'a=sendonly\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=mid:0\r\n'
+        'a=msid:3bb367c8-df58-4476-ae57-a2b5c88ac167 '
+        '0f0f4ee0-6c5a-4962-af21-5c010d76a3fc\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=rtcp-mux\r\n'
+        'a=ssrc-group:FID 4084119596 3654539203\r\n'
+        'a=ssrc:4084119596 cname:6b066127-f630-49c1-aa49-e60379c720d4\r\n'
+        'a=ssrc:3654539203 cname:6b066127-f630-49c1-aa49-e60379c720d4\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:124 H264/90000\r\n'emitting event "new_answer" to public [/live_cam]
+vKehzbyCEPQ-G_sQAAAB is leaving room public [/live_cam]
+176.88.120.53 - - [29/Apr/2022 08:26:14] "GET /socket.io/?transport=websocket&EIO=4&t=1651220662.128153 HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+9DH9iVF04vsoqJuDAAAD is leaving room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 08:26:16] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+176.237.13.213 - - [29/Apr/2022 08:26:16] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:26:16] "GET /live_cam.js HTTP/1.1" 304 -
+HchbwZ3maDCdbCGlAAAF is entering room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 08:26:29] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:26:29] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:26:49] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:26:49] "GET /live_cam.js HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:26:58] "GET /live_cam.html HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:26:58] "GET /live_cam.js HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:27:17] "GET /live_cam.html HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:27:17] "GET /live_cam.js HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:27:22] "GET /live_cam.html HTTP/1.1" 304 -
+176.88.120.53 - - [29/Apr/2022 08:27:22] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:27:38] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:27:38] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:27:46] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:27:46] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:28:25] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:28:26] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:47] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:48] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:52] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:52] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:53] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:32:54] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:33:01] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:33:02] "GET /live_cam.js HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:33:37] "GET /live_cam.html HTTP/1.1" 304 -
+176.237.13.213 - - [29/Apr/2022 08:33:37] "GET /live_cam.js HTTP/1.1" 304 -
+Started Websocket
+ * Serving Flask app 'signaling_server' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses (0.0.0.0)
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:4311
+ * Running on http://157.90.139.101:4311 (Press CTRL+C to quit)
+izBqVmK33o2QOR8wAAAB is entering room public [/live_cam]
+Lnm3zwMAy2ULTA9pAAAD is entering room public [/live_cam]
+izBqVmK33o2QOR8wAAAB is leaving room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 10:50:43] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+176.237.13.213 - - [29/Apr/2022 10:50:43] "GET / HTTP/1.1" 200 -
+176.237.13.213 - - [29/Apr/2022 10:50:44] "GET /live_cam.js HTTP/1.1" 200 -
+j60MKIpUotUPsRSkAAAF is entering room public [/live_cam]
+received event "offer" from j60MKIpUotUPsRSkAAAF [/live_cam]
+emitting event "new_offer" to public [/live_cam]
+received event "answer" from Lnm3zwMAy2ULTA9pAAAD [/live_cam]
+Connection Request
+Connection Request
+Connection Disconnected
+Connection Request
+{'con_type': 'offer',
+ 'd_uid': 2,
+ 'sdp': 'v=0\r\n'
+        'o=- 3483855532827071853 2 IN IP4 127.0.0.1\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=extmap-allow-mixed\r\n'
+        'a=msid-semantic: WMS\r\n'
+        'm=video 15418 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 '
+        '125 107 108 109 35 36 37 38 124 121 120 119 114 39\r\n'
+        'c=IN IP4 176.237.13.213\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=candidate:1217912257 1 udp 2113937151 10.201.21.110 42018 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.237.13.213 15418 typ srflx '
+        'raddr 10.201.21.110 rport 42018 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:uD2U\r\n'
+        'a=ice-pwd:xSu7wUuKI4piETttirhmNWz6\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '38:14:D5:D7:00:93:D0:0A:47:67:5B:2D:A5:32:BD:06:CB:83:AA:CF:E0:7D:C4:06:E7:93:37:87:2E:2C:46:DB\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:0\r\n'
+        'a=extmap:1 urn:ietf:params:rtp-hdrext:toffset\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:3 urn:3gpp:video-orientation\r\n'
+        'a=extmap:4 '
+        'http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n'
+        'a=extmap:5 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n'
+        'a=extmap:6 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\n'
+        'a=extmap:7 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\n'
+        'a=extmap:8 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\n'
+        'a=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\n'
+        'a=recvonly\r\n'
+        'a=rtcp-mux\r\n'
+        'a=rtcp-rsize\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtcp-fb:96 transport-cc\r\n'
+        'a=rtcp-fb:96 ccm fir\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:98 VP9/90000\r\n'
+        'a=rtcp-fb:98 goog-remb\r\n'
+        'a=rtcp-fb:98 transport-cc\r\n'
+        'a=rtcp-fb:98 ccm fir\r\n'
+        'a=rtcp-fb:98 nack\r\n'
+        'a=rtcp-fb:98 nack pli\r\n'
+        'a=fmtp:98 profile-id=0\r\n'
+        'a=rtpmap:99 rtx/90000\r\n'
+        'a=fmtp:99 apt=98\r\n'
+        'a=rtpmap:100 VP9/90000\r\n'
+        'a=rtcp-fb:100 goog-remb\r\n'
+        'a=rtcp-fb:100 transport-cc\r\n'
+        'a=rtcp-fb:100 ccm fir\r\n'
+        'a=rtcp-fb:100 nack\r\n'
+        'a=rtcp-fb:100 nack pli\r\n'
+        'a=fmtp:100 profile-id=1\r\n'
+        'a=rtpmap:101 rtx/90000\r\n'
+        'a=fmtp:101 apt=100\r\n'
+        'a=rtpmap:102 VP9/90000\r\n'
+        'a=rtcp-fb:102 goog-remb\r\n'
+        'a=rtcp-fb:102 transport-cc\r\n'
+        'a=rtcp-fb:102 ccm fir\r\n'
+        'a=rtcp-fb:102 nack\r\n'
+        'a=rtcp-fb:102 nack pli\r\n'
+        'a=fmtp:102 profile-id=2\r\n'
+        'a=rtpmap:123 rtx/90000\r\n'
+        'a=fmtp:123 apt=102\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=rtcp-fb:127 transport-cc\r\n'
+        'a=rtcp-fb:127 ccm fir\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:125 H264/90000\r\n'
+        'a=rtcp-fb:125 goog-remb\r\n'
+        'a=rtcp-fb:125 transport-cc\r\n'
+        'a=rtcp-fb:125 ccm fir\r\n'
+        'a=rtcp-fb:125 nack\r\n'
+        'a=rtcp-fb:125 nack pli\r\n'
+        'a=fmtp:125 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\n'
+        'a=rtpmap:107 rtx/90000\r\n'
+        'a=fmtp:107 apt=125\r\n'
+        'a=rtpmap:108 H264/90000\r\n'
+        'a=rtcp-fb:108 goog-remb\r\n'
+        'a=rtcp-fb:108 transport-cc\r\n'
+        'a=rtcp-fb:108 ccm fir\r\n'
+        'a=rtcp-fb:108 nack\r\n'
+        'a=rtcp-fb:108 nack pli\r\n'
+        'a=fmtp:108 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\n'
+        'a=rtpmap:109 rtx/90000\r\n'
+        'a=fmtp:109 apt=108\r\n'
+        'a=rtpmap:35 H264/90000\r\n'
+        'a=rtcp-fb:35 goog-remb\r\n'
+        'a=rtcp-fb:35 transport-cc\r\n'
+        'a=rtcp-fb:35 ccm fir\r\n'
+        'a=rtcp-fb:35 nack\r\n'
+        'a=rtcp-fb:35 nack pli\r\n'
+        'a=fmtp:35 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f\r\n'
+        'a=rtpmap:36 rtx/90000\r\n'
+        'a=fmtp:36 apt=35\r\n'
+        'a=rtpmap:37 AV1/90000\r\n'
+        'a=rtcp-fb:37 goog-remb\r\n'
+        'a=rtcp-fb:37 transport-cc\r\n'
+        'a=rtcp-fb:37 ccm fir\r\n'
+        'a=rtcp-fb:37 nack\r\n'
+        'a=rtcp-fb:37 nack pli\r\n'
+        'a=rtpmap:38 rtx/90000\r\n'
+        'a=fmtp:38 apt=37\r\n'
+        'a=rtpmap:124 H264/90000\r\n'
+        'a=rtcp-fb:124 goog-remb\r\n'
+        'a=rtcp-fb:124 transport-cc\r\n'
+        'a=rtcp-fb:124 ccm fir\r\n'
+        'a=rtcp-fb:124 nack\r\n'
+        'a=rtcp-fb:124 nack pli\r\n'
+        'a=fmtp:124 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+        'a=rtpmap:121 rtx/90000\r\n'
+        'a=fmtp:121 apt=124\r\n'
+        'a=rtpmap:120 red/90000\r\n'
+        'a=rtpmap:119 rtx/90000\r\n'
+        'a=fmtp:119 apt=120\r\n'
+        'a=rtpmap:114 ulpfec/90000\r\n'
+        'a=rtpmap:39 flexfec-03/90000\r\n'
+        'a=rtcp-fb:39 goog-remb\r\n'
+        'a=rtcp-fb:39 transport-cc\r\n'
+        'a=fmtp:39 repair-window=10000000\r\n'
+        'm=application 15275 UDP/DTLS/SCTP webrtc-datachannel\r\n'
+        'c=IN IP4 176.237.13.213\r\n'
+        'a=candidate:1217912257 1 udp 2113937151 10.201.21.110 38795 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.237.13.213 15275 typ srflx '
+        'raddr 10.201.21.110 rport 38795 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:uD2U\r\n'
+        'a=ice-pwd:xSu7wUuKI4piETttirhmNWz6\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '38:14:D5:D7:00:93:D0:0A:47:67:5B:2D:A5:32:BD:06:CB:83:AA:CF:E0:7D:C4:06:E7:93:37:87:2E:2C:46:DB\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:1\r\n'
+        'a=sctp-port:5000\r\n'
+        'a=max-message-size:262144\r\n',
+ 'uid': 1}
+{'con_type': 'answer',
+ 'd_uid': 1,
+ 'sdp': 'v=0\r\n'
+        'o=- 3860218247 3860218247 IN IP4 0.0.0.0\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=msid-semantic:WMS *\r\n'
+        'm=video 58491 UDP/TLS/RTP/SAVPF 96 97 127 122 124 121\r\n'
+        'c=IN IP4 192.168.43.216\r\n'
+        'a=sendonly\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=mid:0\r\n'
+        'a=msid:865c0b84-3a65-422f-a7b0-da755c42297e '
+        '71910bbb-cd6a-4ad1-a1f0-07fc62184d9e\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=rtcp-mux\r\n'
+        'a=ssrc-group:FID 821184053 3952831157\r\n'
+        'a=ssrc:821184053 cname:bc0b2d94-69d6-4b5d-b20f-08b7cefe0434\r\n'
+        'a=ssrc:3952831157 cname:bc0b2d94-69d6-4b5d-b20f-08b7cefe0434\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'emitting event "new_answer" to public [/live_cam]
+Lnm3zwMAy2ULTA9pAAAD is leaving room public [/live_cam]
+176.89.43.197 - - [29/Apr/2022 10:51:32] "GET /socket.io/?transport=websocket&EIO=4&t=1651229440.293132 HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+j60MKIpUotUPsRSkAAAF is leaving room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 10:51:34] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+YWDGGNWNkB30mKqYAAAH is entering room public [/live_cam]
+YWDGGNWNkB30mKqYAAAH is leaving room public [/live_cam]
+176.88.120.53 - - [29/Apr/2022 10:51:44] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+176.88.120.53 - - [29/Apr/2022 10:51:44] "GET / HTTP/1.1" 200 -
+176.88.120.53 - - [29/Apr/2022 10:51:44] "GET /live_cam.js HTTP/1.1" 200 -
+fLoHm-XSff7N4bh2AAAJ is entering room public [/live_cam]
+176.88.120.53 - - [29/Apr/2022 10:51:50] "GET / HTTP/1.1" 200 -
+176.88.120.53 - - [29/Apr/2022 10:51:50] "GET /live_cam.js HTTP/1.1" 200 -
+u_1k2CkvfRwBTbFjAAAL is entering room public [/live_cam]
+received event "offer" from u_1k2CkvfRwBTbFjAAAL [/live_cam]
+
+        'a=rtpmap:124 H264/90000\r\n'
+        'a=rtcp-fb:124 nack\r\n'
+        'a=rtcp-fb:124 nack pli\r\n'
+        'a=rtcp-fb:124 goog-remb\r\n'
+        'a=fmtp:124 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+        'a=rtpmap:121 rtx/90000\r\n'
+        'a=fmtp:121 apt=124\r\n'
+        'a=candidate:8572964151501919fd63c518e9a41c8e 1 udp 2130706431 '
+        '192.168.43.216 58491 typ host\r\n'
+        'a=candidate:804e58b7bfcd6cc0fa8da7473cc8976c 1 udp 1694498815 '
+        '176.89.43.197 5466 typ srflx raddr 192.168.43.216 rport 58491\r\n'
+        'a=end-of-candidates\r\n'
+        'a=ice-ufrag:v3kj\r\n'
+        'a=ice-pwd:KB54HtAJ92gfeRIujXaUZ9\r\n'
+        'a=fingerprint:sha-256 '
+        'B1:A7:E4:50:18:9E:4E:A0:34:65:CD:AE:B0:00:69:C3:75:A0:4B:AF:53:92:34:C7:21:E6:70:8B:7C:AD:F2:72\r\n'
+        'a=setup:active\r\n'
+        'm=application 58491 UDP/DTLS/SCTP webrtc-datachannel\r\n'
+        'c=IN IP4 192.168.43.216\r\n'
+        'a=mid:1\r\n'
+        'a=sctp-port:5000\r\n'
+        'a=max-message-size:65536\r\n'
+        'a=candidate:8572964151501919fd63c518e9a41c8e 1 udp 2130706431 '
+        '192.168.43.216 58491 typ host\r\n'
+        'a=candidate:804e58b7bfcd6cc0fa8da7473cc8976c 1 udp 1694498815 '
+        '176.89.43.197 5466 typ srflx raddr 192.168.43.216 rport 58491\r\n'
+        'a=end-of-candidates\r\n'
+        'a=ice-ufrag:v3kj\r\n'
+        'a=ice-pwd:KB54HtAJ92gfeRIujXaUZ9\r\n'
+        'a=fingerprint:sha-256 '
+        'B1:A7:E4:50:18:9E:4E:A0:34:65:CD:AE:B0:00:69:C3:75:A0:4B:AF:53:92:34:C7:21:E6:70:8B:7C:AD:F2:72\r\n'
+        'a=setup:active\r\n',
+ 'uid': 2}
+Connection Disconnected
+Connection Disconnected
+Connection Request
+Connection Disconnected
+Connection Request
+Connection Request
+{'con_type': 'offer',
+ 'd_uid': 2,
+ 'sdp': 'v=0\r\n'
+        'o=- 5126227235377283958 2 IN IP4 127.0.0.1\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=extmap-allow-mixed\r\n'
+        'a=msid-semantic: WMS\r\n'
+        'm=video 11679 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 '
+        '125 107 108 109 35 36 37 38 124 121 120 119 114 39\r\n'
+        'c=IN IP4 176.88.120.53\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=candidate:3870334310 1 udp 2113937151 192.168.1.133 45995 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.88.120.53 11679 typ srflx '
+        'raddr 192.168.1.133 rport 45995 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:3fAf\r\n'
+        'a=ice-pwd:O2h6ekktSRemOqE3Nu78mUJn\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '6F:4E:F5:58:AD:B8:A6:CD:ED:5A:C4:9F:83:00:EC:15:9A:B9:9C:76:15:A9:C4:58:33:31:1C:F7:05:75:76:64\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:0\r\n'
+        'a=extmap:1 urn:ietf:params:rtp-hdrext:toffset\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:3 urn:3gpp:video-orientation\r\n'
+        'a=extmap:4 '
+        'http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n'
+        'a=extmap:5 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n'
+        'a=extmap:6 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\n'
+        'a=extmap:7 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\n'
+        'a=extmap:8 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\n'
+        'a=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\n'
+        'a=recvonly\r\n'
+        'a=rtcp-mux\r\n'
+        'a=rtcp-rsize\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtcp-fb:96 transport-cc\r\n'
+        'a=rtcp-fb:96 ccm fir\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:98 VP9/90000\r\n'
+        'a=rtcp-fb:98 goog-remb\r\n'
+        'a=rtcp-fb:98 transport-cc\r\n'
+        'a=rtcp-fb:98 ccm fir\r\n'
+        'a=rtcp-fb:98 nack\r\n'
+        'a=rtcp-fb:98 nack pli\r\n'
+        'a=fmtp:98 profile-id=0\r\n'
+        'a=rtpmap:99 rtx/90000\r\n'
+        'a=fmtp:99 apt=98\r\n'
+        'a=rtpmap:100 VP9/90000\r\n'
+        'a=rtcp-fb:100 goog-remb\r\n'
+        'a=rtcp-fb:100 transport-cc\r\n'
+        'a=rtcp-fb:100 ccm fir\r\n'
+        'a=rtcp-fb:100 nack\r\n'
+        'a=rtcp-fb:100 nack pli\r\n'
+        'a=fmtp:100 profile-id=1\r\n'
+        'a=rtpmap:101 rtx/90000\r\n'
+        'a=fmtp:101 apt=100\r\n'
+        'a=rtpmap:102 VP9/90000\r\n'
+        'a=rtcp-fb:102 goog-remb\r\n'
+        'a=rtcp-fb:102 transport-cc\r\n'
+        'a=rtcp-fb:102 ccm fir\r\n'
+        'a=rtcp-fb:102 nack\r\n'
+        'a=rtcp-fb:102 nack pli\r\n'
+        'a=fmtp:102 profile-id=2\r\n'
+        'a=rtpmap:123 rtx/90000\r\n'
+        'a=fmtp:123 apt=102\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=rtcp-fb:127 transport-cc\r\n'
+        'a=rtcp-fb:127 ccm fir\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:125 H264/90000\r\n'
+        'a=rtcp-fb:125 goog-remb\r\n'
+        'a=rtcp-fb:125 transport-cc\r\n'
+        'a=rtcp-fb:125 ccm fir\r\n'
+        'a=rtcp-fb:125 nack\r\n'
+        'a=rtcp-fb:125 nack pli\r\n'
+        'a=fmtp:125 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\n'
+        'a=rtpmap:107 rtx/90000\r\n'
+        'a=fmtp:107 apt=125\r\n'
+        'a=rtpmap:108 H264/90000\r\n'
+        'a=rtcp-fb:108 goog-remb\r\n'
+        'a=rtcp-fb:108 transport-cc\r\n'
+        'a=rtcp-fb:108 ccm fir\r\n'
+        'a=rtcp-fb:108 nack\r\n'
+        'a=rtcp-fb:108 nack pli\r\n'
+        'a=fmtp:108 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\n'
+        'a=rtpmap:109 rtx/90000\r\n'
+        'a=fmtp:109 apt=108\r\n'
+        'a=rtpmap:35 H264/90000\r\n'
+        'a=rtcp-fb:35 goog-remb\r\n'
+        'a=rtcp-fb:35 transport-cc\r\n'
+        'a=rtcp-fb:35 ccm fir\r\n'
+        'a=rtcp-fb:35 nack\r\n'
+        'a=rtcp-fb:35 nack pli\r\n'
+        'a=fmtp:35 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f\r\n'
+        'a=rtpmap:36 rtx/90000\r\n'
+        'a=fmtp:36 apt=35\r\n'
+        'a=rtpmap:37 AV1/90000\r\n'
+        'a=rtcp-fb:37 goog-remb\r\n'
+        'a=rtcp-fb:37 transport-cc\r\n'
+        'a=rtcp-fb:37 ccm fir\r\n'
+        'a=rtcp-fb:37 nack\r\n'
+        'a=rtcp-fb:37 nack pli\r\n'
+        'a=rtpmap:38 rtx/90000\r\n'
+        'a=fmtp:38 apt=37\r\n'
+        'a=rtpmap:124 H264/90000\r\n'
+        'a=rtcp-fb:124 goog-remb\r\n'
+        'a=rtcp-fb:124 transport-cc\r\n'
+        'a=rtcp-fb:124 ccm fir\r\n'
+        'a=rtcp-fb:124 nack\r\n'
+        'a=rtcp-fb:124 nack pli\r\n'
+        'a=fmtp:124 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+        'a=rtpmap:121 rtx/90000\r\n'
+        'a=fmtp:121 apt=124\r\n'
+        'a=rtpmap:120 red/90000\r\n'
+        'a=rtpmap:119 rtx/90000\r\n'
+        'a=fmtp:119 apt=120\r\n'
+        'a=rtpmap:114 ulpfec/90000\r\n'
+        'a=rtpmap:39 flexfec-03/90000\r\n'
+        'a=rtcp-fb:39 goog-remb\r\n'
+        'a=rtcp-fb:39 transport-cc\r\n'
+        'a=fmtp:39 repair-window=10000000\r\n'
+        'm=application 12284 UDP/DTLS/SCTP webrtc-datachannel\r\n'
+        'c=IN IP4 176.88.120.53\r\n'
+        'a=candidate:3870334310 1 udp 2113937151 192.168.1.133 48440 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.88.120.53 12284 typ srflx '
+        'raddr 192.168.1.133 rport 48440 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:3fAf\r\n'
+        'a=ice-pwd:O2h6ekktSRemOqE3Nu78mUJn\r\n'
+        'a=ice-options:trickle\r\n'
+        emitting event "new_offer" to public [/live_cam]
+received event "answer" from fLoHm-XSff7N4bh2AAAJ [/live_cam]
+emitting event "new_answer" to public [/live_cam]
+fLoHm-XSff7N4bh2AAAJ is leaving room public [/live_cam]
+176.89.43.197 - - [29/Apr/2022 10:52:21] "GET /socket.io/?transport=websocket&EIO=4&t=1651229508.62784 HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+r2OreTba8Rsa_V57AAAN is entering room public [/live_cam]
+r2OreTba8Rsa_V57AAAN is leaving room public [/live_cam]
+176.88.120.53 - - [29/Apr/2022 10:53:40] "GET /socket.io/?transport=websocket&EIO=4&t=1651229612.0727785 HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+F3j97atuukz6zyOjAAAP is entering room public [/live_cam]
+xVUGWpkYcVb5QkUoAAAR is entering room public [/live_cam]
+xVUGWpkYcVb5QkUoAAAR is leaving room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 10:54:46] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+176.237.13.213 - - [29/Apr/2022 10:54:46] "GET / HTTP/1.1" 200 -
+176.237.13.213 - - [29/Apr/2022 10:54:46] "GET /live_cam.js HTTP/1.1" 200 -
+6ds4weOEs7jWBEPGAAAT is entering room public [/live_cam]
+received event "offer" from 6ds4weOEs7jWBEPGAAAT [/live_cam]
+'a=fingerprint:sha-256 '
+        '6F:4E:F5:58:AD:B8:A6:CD:ED:5A:C4:9F:83:00:EC:15:9A:B9:9C:76:15:A9:C4:58:33:31:1C:F7:05:75:76:64\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:1\r\n'
+        'a=sctp-port:5000\r\n'
+        'a=max-message-size:262144\r\n',
+ 'uid': 1}
+{'con_type': 'answer',
+ 'd_uid': 1,
+ 'sdp': 'v=0\r\n'
+        'o=- 3860218314 3860218314 IN IP4 0.0.0.0\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=msid-semantic:WMS *\r\n'
+        'm=video 65491 UDP/TLS/RTP/SAVPF 96 97 127 122 124 121\r\n'
+        'c=IN IP4 192.168.43.216\r\n'
+        'a=sendonly\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=mid:0\r\n'
+        'a=msid:14f2da0e-9ad2-441a-9336-f82264ebcf6a '
+        '4d7bbcd3-028e-4ad2-90b0-9f3e45a08ecb\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=rtcp-mux\r\n'
+        'a=ssrc-group:FID 1031680172 750772830\r\n'
+        'a=ssrc:1031680172 cname:90279aa1-b85c-4a1e-b8ea-2f5fad541261\r\n'
+        'a=ssrc:750772830 cname:90279aa1-b85c-4a1e-b8ea-2f5fad541261\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:124 H264/90000\r\n'
+        'a=rtcp-fb:124 nack\r\n'
+        'a=rtcp-fb:124 nack pli\r\n'
+        'a=rtcp-fb:124 goog-remb\r\n'
+        'a=fmtp:124 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n'
+        'a=rtpmap:121 rtx/90000\r\n'
+        'a=fmtp:121 apt=124\r\n'
+        'a=candidate:8572964151501919fd63c518e9a41c8e 1 udp 2130706431 '
+        '192.168.43.216 65491 typ host\r\n'
+        'a=candidate:804e58b7bfcd6cc0fa8da7473cc8976c 1 udp 1694498815 '
+        '176.89.43.197 5501 typ srflx raddr 192.168.43.216 rport 65491\r\n'
+        'a=end-of-candidates\r\n'
+        'a=ice-ufrag:4VMb\r\n'
+        'a=ice-pwd:qqWq1MDV1on9oiS1FeY8Xo\r\n'
+        'a=fingerprint:sha-256 '
+        'B5:09:B8:50:EF:9F:61:54:A3:D4:3C:D1:ED:7F:50:14:66:2F:0D:01:E9:CF:39:13:D8:6E:A3:BF:9B:4D:28:03\r\n'
+        'a=setup:active\r\n'
+        'm=application 65491 UDP/DTLS/SCTP webrtc-datachannel\r\n'
+        'c=IN IP4 192.168.43.216\r\n'
+        'a=mid:1\r\n'
+        'a=sctp-port:5000\r\n'
+        'a=max-message-size:65536\r\n'
+        'a=candidate:8572964151501919fd63c518e9a41c8e 1 udp 2130706431 '
+        '192.168.43.216 65491 typ host\r\n'
+        'a=candidate:804e58b7bfcd6cc0fa8da7473cc8976c 1 udp 1694498815 '
+        '176.89.43.197 5501 typ srflx raddr 192.168.43.216 rport 65491\r\n'
+        'a=end-of-candidates\r\n'
+        'a=ice-ufrag:4VMb\r\n'
+        'a=ice-pwd:qqWq1MDV1on9oiS1FeY8Xo\r\n'
+        'a=fingerprint:sha-256 '
+        'B5:09:B8:50:EF:9F:61:54:A3:D4:3C:D1:ED:7F:50:14:66:2F:0D:01:E9:CF:39:13:D8:6E:A3:BF:9B:4D:28:03\r\n'
+        'a=setup:active\r\n',
+ 'uid': 2}
+Connection Disconnected
+Connection Request
+Connection Disconnected
+Connection Request
+Connection Request
+Connection Disconnected
+Connection Request
+{'con_type': 'offer',
+ 'd_uid': 2,
+ 'sdp': 'v=0\r\n'
+        'o=- 17022080753431255 2 IN IP4 127.0.0.1\r\n'
+        's=-\r\n'
+        't=0 0\r\n'
+        'a=group:BUNDLE 0 1\r\n'
+        'a=extmap-allow-mixed\r\n'
+        'a=msid-semantic: WMS\r\n'
+        'm=video 15796 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 '
+        '125 107 108 109 35 36 37 38 124 121 120 119 114 39\r\n'
+        'c=IN IP4 176.237.13.213\r\n'
+        'a=rtcp:9 IN IP4 0.0.0.0\r\n'
+        'a=candidate:1217912257 1 udp 2113937151 10.201.21.110 45126 typ host '
+        'generation 0 network-cost 999\r\n'
+        'a=candidate:842163049 1 udp 1677729535 176.237.13.213 15796 typ srflx '
+        'raddr 10.201.21.110 rport 45126 generation 0 network-cost 999\r\n'
+        'a=ice-ufrag:nEdU\r\n'
+        'a=ice-pwd:kI/rG62nnCC9+o5ajgontURK\r\n'
+        'a=ice-options:trickle\r\n'
+        'a=fingerprint:sha-256 '
+        '42:D1:40:97:BB:36:93:24:5C:20:B4:9B:07:BB:30:64:0B:17:D1:F5:60:24:4E:2D:05:AD:69:D4:37:94:2F:61\r\n'
+        'a=setup:actpass\r\n'
+        'a=mid:0\r\n'
+        'a=extmap:1 urn:ietf:params:rtp-hdrext:toffset\r\n'
+        'a=extmap:2 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n'
+        'a=extmap:3 urn:3gpp:video-orientation\r\n'
+        'a=extmap:4 '
+        'http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n'
+        'a=extmap:5 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n'
+        'a=extmap:6 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\n'
+        'a=extmap:7 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\n'
+        'a=extmap:8 '
+        'http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\n'
+        'a=extmap:9 urn:ietf:params:rtp-hdrext:sdes:mid\r\n'
+        'a=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\n'
+        'a=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\n'
+        'a=recvonly\r\n'
+        'a=rtcp-mux\r\n'
+        'a=rtcp-rsize\r\n'
+        'a=rtpmap:96 VP8/90000\r\n'
+        'a=rtcp-fb:96 goog-remb\r\n'
+        'a=rtcp-fb:96 transport-cc\r\n'
+        'a=rtcp-fb:96 ccm fir\r\n'
+        'a=rtcp-fb:96 nack\r\n'
+        'a=rtcp-fb:96 nack pli\r\n'
+        'a=rtpmap:97 rtx/90000\r\n'
+        'a=fmtp:97 apt=96\r\n'
+        'a=rtpmap:98 VP9/90000\r\n'
+        'a=rtcp-fb:98 goog-remb\r\n'
+        'a=rtcp-fb:98 transport-cc\r\n'
+        'a=rtcp-fb:98 ccm fir\r\n'
+        'a=rtcp-fb:98 nack\r\n'
+        'a=rtcp-fb:98 nack pli\r\n'
+        'a=fmtp:98 profile-id=0\r\n'
+        'a=rtpmap:99 rtx/90000\r\n'
+        'a=fmtp:99 apt=98\r\n'
+        'a=rtpmap:100 VP9/90000\r\n'
+        'a=rtcp-fb:100 goog-remb\r\n'
+        'a=rtcp-fb:100 transport-cc\r\n'
+        'a=rtcp-fb:100 ccm fir\r\n'
+        'a=rtcp-fb:100 nack\r\n'
+        'a=rtcp-fb:100 nack pli\r\n'
+        'a=fmtp:100 profile-id=1\r\n'
+        'a=rtpmap:101 rtx/90000\r\n'
+        'a=fmtp:101 apt=100\r\n'
+        'a=rtpmap:102 VP9/90000\r\n'
+        'a=rtcp-fb:102 goog-remb\r\n'
+        'a=rtcp-fb:102 transport-cc\r\n'
+        'a=rtcp-fb:102 ccm fir\r\n'
+        'a=rtcp-fb:102 nack\r\n'
+        'a=rtcp-fb:102 nack pli\r\n'
+        'a=fmtp:102 profile-id=2\r\n'
+        'a=rtpmap:123 rtx/90000\r\n'
+        'a=fmtp:123 apt=102\r\n'
+        'a=rtpmap:127 H264/90000\r\n'
+        'a=rtcp-fb:127 goog-remb\r\n'
+        'a=rtcp-fb:127 transport-cc\r\n'
+        'a=rtcp-fb:127 ccm fir\r\n'
+        'a=rtcp-fb:127 nack\r\n'
+        'a=rtcp-fb:127 nack pli\r\n'
+        'a=fmtp:127 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\n'
+        'a=rtpmap:122 rtx/90000\r\n'
+        'a=fmtp:122 apt=127\r\n'
+        'a=rtpmap:125 H264/90000\r\n'
+        'a=rtcp-fb:125 goog-remb\r\n'
+        'a=rtcp-fb:125 transport-cc\r\n'
+        'a=rtcp-fb:125 ccm fir\r\n'
+        'a=rtcp-fb:125 nack\r\n'
+        'a=rtcp-fb:125 nack pli\r\n'
+        'a=fmtp:125 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\n'
+        'a=rtpmap:107 rtx/90000\r\n'
+        'a=fmtp:107 apt=125\r\n'
+        'a=rtpmap:108 H264/90000\r\n'
+        'a=rtcp-fb:108 goog-remb\r\n'
+        'a=rtcp-fb:108 transport-cc\r\n'
+        'a=rtcp-fb:108 ccm fir\r\n'
+        'a=rtcp-fb:108 nack\r\n'
+        'a=rtcp-fb:108 nack pli\r\n'
+        'a=fmtp:108 '
+        'level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\n'
+        'a=rtpmap:109 rtx/90000\r\n'
+        'a=fmtp:109 apt=108\r\n'
+        'a=rtpmap:35 H264/90000\r\n'
+        'a=rtcp-fb:35 goog-remb\r\n'
+        'a=rtcp-fb:35 transport-cc\r\n'
+        'a=rtcp-fb:35 ccm fir\r\n'
+        'a=rtcp-fb:35 nack\r\n'
+        emitting event "new_offer" to public [/live_cam]
+received event "answer" from F3j97atuukz6zyOjAAAP [/live_cam]
+emitting event "new_answer" to public [/live_cam]
+u_1k2CkvfRwBTbFjAAAL is leaving room public [/live_cam]
+6ds4weOEs7jWBEPGAAAT is leaving room public [/live_cam]
+176.237.13.213 - - [29/Apr/2022 10:56:02] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+176.88.120.53 - - [29/Apr/2022 11:10:17] "GET /socket.io/?EIO=4&transport=websocket HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response
+F3j97atuukz6zyOjAAAP is leaving room public [/live_cam]
+176.88.120.53 - - [29/Apr/2022 11:43:48] "GET /socket.io/?transport=websocket&EIO=4&t=1651229671.9562824 HTTP/1.1" 500 -
+Error on request:
+Traceback (most recent call last):
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 319, in run_wsgi
+    execute(self.server.app)
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 311, in execute
+    write(b"")
+  File "/home/mvp/.local/lib/python3.8/site-packages/werkzeug/serving.py", line 252, in write
+    assert status_set is not None, "write() before start_response"
+AssertionError: write() before start_response

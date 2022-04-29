@@ -1,3 +1,6 @@
+# Any temporary output files:
+*.out
+
 # bin folder
 bin/
 
