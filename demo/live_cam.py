@@ -42,7 +42,7 @@ sio = socketio.AsyncClient()
 # device.
 # Note that the buffered=False is the reason we can stream virtually lag free
 def create_media_stream_track():
-    options = {"framerate": "30", "video_size": "1280x720"}
+    options = {"framerate": "30", "video_size": "640x480"}
     if platform.system() == "Darwin":
         webcam = MediaPlayer(
             "default:none", format="avfoundation", options=options
@@ -61,9 +61,27 @@ async def createRTCConnection():
     global pc
     global data_channel
 
-    rtc_server = RTCIceServer('stun:stun.l.google.com:19302')
-    rtc_config = RTCConfiguration([rtc_server])
-    pc = RTCPeerConnection(rtc_config)
+    google_rtc_server = RTCIceServer('stun:stun.l.google.com:19302')
+    google_rtc_config = RTCConfiguration([google_rtc_server])
+
+    open_relay_rtc_server = RTCIceServer('stun:openrelay.metered.ca:80')
+    open_relay_turn_server_1 = RTCIceServer('turn:openrelay.metered.ca:80',
+                                            username='openrelayproject',
+                                            credential='openrelayproject')
+    open_relay_turn_server_2 = RTCIceServer('turn:openrelay.metered.ca:443',
+                                            username='openrelayproject',
+                                            credential='openrelayproject')
+    open_relay_turn_server_3 = RTCIceServer('turn:openrelay.metered.ca:443?transport=tcp',
+                                            username='openrelayproject',
+                                            credential='openrelayproject')
+    rtc_open_relay_config = RTCConfiguration([open_relay_rtc_server,
+                                              open_relay_turn_server_1,
+                                              open_relay_turn_server_2,
+                                              open_relay_turn_server_3,
+                                              ])
+
+    pc = RTCPeerConnection(google_rtc_config)
+    # pc = RTCPeerConnection(rtc_open_relay_config)
 
     
     # TODO: Do we need to force codec?
