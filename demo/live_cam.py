@@ -8,6 +8,7 @@ import socketio
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
 from aiortc.contrib.media import MediaPlayer, MediaRelay
+from aiortc.rtcrtpsender import RTCRtpSender
 # from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
 
 def getUID():
@@ -134,17 +135,21 @@ async def newOfferReceived(message):
 
     video_sender = pc.addTrack(create_media_stream_track())
 
-    # codecs = RTCRtpSender.getCapabilities('video').codecs
-    # pprint(codecs)
-    # pprint(pc.getTransceivers())
+
+    # Transcoding the video to make it use less bandwidth and have less latency
+    selected_codec = 'video/H264'
+    codecs = RTCRtpSender.getCapabilities('video').codecs
+    transceiver = next(t for t in pc.getTransceivers() if t.sender ==
+                       video_sender)
+    transceiver.setCodecPreferences(
+        [codec for codec in codecs if codec.mimeType == selected_codec]
+    )
 
 
     print("Creating SDP")
     offerSDP = RTCSessionDescription(sdp=offer['sdp'], type=offer['con_type'])
 
     pprint("Created RTC Connection")
-    # PLAYER GOES HERE
-
 
     # handle offer
     await pc.setRemoteDescription(offerSDP)
