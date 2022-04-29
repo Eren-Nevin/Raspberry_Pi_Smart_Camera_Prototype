@@ -1,7 +1,7 @@
 from pathlib import PosixPath
 from pyrogram import Client, filters
 from pyrogram.types.messages_and_media.message import Message
-from face_detect.webcam_face_detect import VideoFaceDetector, Face, KnownFace, read_known_faces_from_directory
+from webcam_face_detect import VideoFaceDetector, Face, KnownFace, read_known_faces_from_directory
 import cv2
 import asyncio
 

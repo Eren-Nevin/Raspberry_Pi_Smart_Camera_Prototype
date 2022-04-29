@@ -103,6 +103,7 @@ async def createRTCConnection():
         pprint(f"Connection state is {pc.connectionState}")
         if pc.connectionState == "failed":
             await pc.close()
+            await createRTCConnection()
 
     @pc.on("iceconnectionstatechange")
     async def on_ice_connection_state_change():
