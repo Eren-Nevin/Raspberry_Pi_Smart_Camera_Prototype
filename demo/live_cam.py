@@ -36,6 +36,7 @@ SOCKET_IO_NAMESPACE = '/live_cam'
 SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
 
 sio = socketio.AsyncClient()
+pc = None
 
 # We can use the picamera module to create a recording based on our specific
 # needs and stream it somehow (e.g. socket, BytesIO, ...) to MediaPlayer class.
@@ -43,6 +44,7 @@ sio = socketio.AsyncClient()
 # device.
 # Note that the buffered=False is the reason we can stream virtually lag free
 def create_media_stream_track():
+    global webcam
     options = {"framerate": "30", "video_size": "640x480"}
     if platform.system() == "Darwin":
         webcam = MediaPlayer(
@@ -102,8 +104,8 @@ async def createRTCConnection():
     async def on_connectionstatechange():
         pprint(f"Connection state is {pc.connectionState}")
         if pc.connectionState == "failed":
-            await pc.close()
-            await createRTCConnection()
+            if pc:
+                await pc.close()
 
     @pc.on("iceconnectionstatechange")
     async def on_ice_connection_state_change():
@@ -121,14 +123,16 @@ async def createRTCConnection():
 
 
 async def start_client():
-    await createRTCConnection()
-
     await sio.connect(f"{SOCKET_IO_SERVER_ADDRESS}",
                 namespaces=[SOCKET_IO_NAMESPACE], transports=["websocket"])
 
     await sio.wait()
 
 async def newOfferReceived(message):
+    if pc:
+        await pc.close()
+        webcam.video.stop()
+    await createRTCConnection()
     offer = message
     if int(offer['d_uid']) != getUID():
         pprint("Offer not mine")
