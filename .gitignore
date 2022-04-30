@@ -6,6 +6,7 @@ bin/
 
 # Sessions (e.g. Telegram Bot):
 *.session
+*.session-journal
 
 # Any video or image
 *.jpg
