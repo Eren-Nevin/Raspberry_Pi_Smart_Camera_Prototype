@@ -1,3 +1,4 @@
+from PIL import Image
 from io import BytesIO
 from pathlib import PosixPath
 from pyrogram import Client, filters
@@ -48,7 +49,10 @@ async def handle_faces_rpi(client: Client, message: Message):
     video_face_detector = RPiFaceDetector("320x240")
     while True:
         rgb_small_frame = video_face_detector.capture_frame()
-        bytes_io = BytesIO(rgb_small_frame.tobytes())
+        # bytes_io = BytesIO(rgb_small_frame.tobytes())
+        img = Image.fromarray(rgb_small_frame)
+        img.save("pic.jpg")
+
         found_face_locations, found_face_encodings =\
             video_face_detector.detect_faces(rgb_small_frame)
         found_faces = video_face_detector.recognize_faces(known_faces,
@@ -58,13 +62,13 @@ async def handle_faces_rpi(client: Client, message: Message):
             # frame_photo = cv2.imencode('.jpg', frame)[1]
             face.name = face.name if face.isKnown else "Unknown"
             # cv2.imwrite(f"pic.jpg", frame)
-            await client.send_photo(message.chat.id, bytes_io,
+            await client.send_photo(message.chat.id, "pic.jpg",
                                     caption=face.name)
 
         await asyncio.sleep(3)
 
 async def start(client: Client, message: Message):
-    await handle_faces_general(client, message)
+    await handle_faces_rpi(client, message)
 
 
 
