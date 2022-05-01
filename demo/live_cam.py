@@ -1,15 +1,24 @@
 from pprint import pprint
 from dataclasses import dataclass, asdict
 import asyncio
+import subprocess
 import sys
 import platform
+from aiortc.mediastreams import MediaStreamTrack
 
 import socketio
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
 from aiortc.contrib.media import MediaPlayer, MediaRelay
 from aiortc.rtcrtpsender import RTCRtpSender
+from aiortc.contrib.media import MediaRecorder
 # from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
+from aiortc.rtcrtpreceiver import RemoteStreamTrack
+
+from subprocess import Popen
+
+external_media_player_cmd = ['ffplay', '-f', 'wav', '-']
+external_media_player_process = Popen(external_media_player_cmd, stdin=subprocess.PIPE)
 
 def getUID():
     return 2
@@ -33,10 +42,21 @@ class IceCandidate:
 
 SOCKET_IO_NAMESPACE = '/live_cam'
 
-SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
+# SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
+SOCKET_IO_SERVER_ADDRESS = f"https://{sys.argv[1]}"
 
-sio = socketio.AsyncClient()
+
+sio = socketio.AsyncClient(ssl_verify=False)
 pc = None
+
+class IncomingMicStreamTrack(MediaStreamTrack):
+
+    def __init__(self, track):
+        super().__init__()
+
+        self.track = track
+    async def recv(self):
+        frame = await self.track.recv()
 
 # We can use the picamera module to create a recording based on our specific
 # needs and stream it somehow (e.g. socket, BytesIO, ...) to MediaPlayer class.
@@ -62,7 +82,9 @@ def create_media_stream_track():
 
 def create_microphone_media_stream_track():
     # player = MediaPlayer('hw:1,0', format='alsa', options={'channels': '1', 'sample_rate': '44000'})
-    player = MediaPlayer('Welcome.mp3')
+    player = MediaPlayer("default", format="pulse")
+    # player = MediaPlayer('Welcome.mp3')
+
     return player.audio
     # relay = MediaRelay()
     # return relay.subscribe(player.audio, buffered=False)
@@ -71,6 +93,7 @@ def create_microphone_media_stream_track():
 async def createRTCConnection():
     global pc
     global data_channel
+    global recorder
 
     google_rtc_server = RTCIceServer('stun:stun.l.google.com:19302')
     google_rtc_config = RTCConfiguration([google_rtc_server])
@@ -114,6 +137,8 @@ async def createRTCConnection():
         if pc.connectionState == "failed":
             if pc:
                 await pc.close()
+                if recorder:
+                    recorder.stop()
 
     @pc.on("iceconnectionstatechange")
     async def on_ice_connection_state_change():
@@ -127,12 +152,26 @@ async def createRTCConnection():
     async def on_ice_gathering_state_change():
         pprint(f"Signaling State is {pc.signalingState}")
 
+
+    # Adding mic callbacks that would play the audio returned from browser
+    @pc.on("track")
+    async def onTrack(track):
+        pprint(track)
+        # incoming_mic_stream = IncomingMicStreamTrack(track)
+        recorder = MediaRecorder(external_media_player_process.stdin,
+                                 format='wav')
+        recorder.addTrack(track)
+        await recorder.start()
+
     print("Active PC Created")
 
 
 async def start_client():
     await sio.connect(f"{SOCKET_IO_SERVER_ADDRESS}",
                 namespaces=[SOCKET_IO_NAMESPACE], transports=["websocket"])
+
+    # clvc_cmd = ['cvlc', 
+    # clvc_process 
 
     await sio.wait()
 
@@ -159,7 +198,7 @@ async def newOfferReceived(message):
         [codec for codec in codecs if codec.mimeType == selected_codec]
     )
 
-    # audio_sender = pc.addTrack(create_microphone_media_stream_track())
+    audio_sender = pc.addTrack(create_microphone_media_stream_track())
 
     # Transcoding the video to make it use less bandwidth and have less latency
     # selected_codec = 'audio/opus'

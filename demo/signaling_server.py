@@ -30,6 +30,9 @@ app.config['SECRET_KEY'] = 'SOCKET_IO_SECRET_KEY'
 
 socket_io_namespace = sys.argv[1]
 
+cert_file_path = sys.argv[2]
+key_file_path = sys.argv[3]
+
 socketio = SocketIO(app, logger=True,
                     # engineio_logger=True,
                     cors_allowed_origins="*",
@@ -84,5 +87,7 @@ except Exception:
     print("Exception")
 
 if __name__ == "__main__":
-    socketio.run(app, '0.0.0.0', 4311)
+    # socketio.run(app, '0.0.0.0', 4311)
+    socketio.run(app, '0.0.0.0', 4311, ssl_context=(cert_file_path,
+                                                    key_file_path))
     # app.run('0.0.0.0', 4311)

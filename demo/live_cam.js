@@ -4,27 +4,29 @@ let socket = null;
 let active_pc = null;
 let data_channel = null;
 
+let localStream = null;
+
 const STUN_SERVERS = ["stun:stun.l.google.com:19302"];
 const OPEN_RELAY_SERVERS = [
-    {
-      urls: "stun:openrelay.metered.ca:80",
-    },
-    {
-      urls: "turn:openrelay.metered.ca:80",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
-    {
-      urls: "turn:openrelay.metered.ca:443",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
-    {
-      urls: "turn:openrelay.metered.ca:443?transport=tcp",
-      username: "openrelayproject",
-      credential: "openrelayproject",
-    },
-  ];
+  {
+    urls: "stun:openrelay.metered.ca:80",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:80",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:443",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:443?transport=tcp",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+];
 
 const SIGNALING_SERVER_SOCKETIO_NAMESPACE = "live_cam";
 
@@ -184,7 +186,7 @@ function handleICEGatheringStateChangeEvent(event) {
 
 async function createPeerConnection() {
   let config = {
-    iceServers: OPEN_RELAY_SERVERS
+    iceServers: OPEN_RELAY_SERVERS,
   };
 
   config.iceServers = [{ urls: STUN_SERVERS }];
@@ -215,18 +217,18 @@ async function createPeerConnection() {
   active_pc.addTransceiver("video", { direction: "recvonly" });
   active_pc.addTransceiver("audio", { direction: "sendrecv" });
 
-// active_pc.addTrack()
-    //
+  // active_pc.addTrack()
+  //
 
-    let remoteStream = new MediaStream();
+  let remoteStream = new MediaStream();
 
   active_pc.addEventListener("track", (evt) => {
-      evt.streams[0].getTracks().forEach(track => {
-          console.log(track)
-          remoteStream.addTrack(track)
-      })
+    evt.streams[0].getTracks().forEach((track) => {
+      console.log(track);
+      remoteStream.addTrack(track);
+    });
   });
-    videoElement.srcObject = remoteStream
+  videoElement.srcObject = remoteStream;
 
   console.log("Active PC Created!");
 }
@@ -256,6 +258,19 @@ async function callPeer() {
     dc.onclose = onDataMessageClose;
     dc.onopen = onDataMessageOpen;
     dc.onmessage = onDataMessage;
+
+    // Adding Microphone
+
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+
+    localStream.getTracks().forEach((track) => {
+        console.log("Adding mic track");
+      active_pc.addTrack(track, localStream);
+    });
+      
   } catch (e) {
     console.log(e);
   }
