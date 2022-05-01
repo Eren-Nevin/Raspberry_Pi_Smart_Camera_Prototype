@@ -256,6 +256,7 @@ async function callPeer() {
     dc.onclose = onDataMessageClose;
     dc.onopen = onDataMessageOpen;
     dc.onmessage = onDataMessage;
+      
   } catch (e) {
     console.log(e);
   }
