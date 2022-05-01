@@ -1,6 +1,7 @@
 from pprint import pprint
 from dataclasses import dataclass, asdict
 import asyncio
+import subprocess
 import sys
 import platform
 from aiortc.mediastreams import MediaStreamTrack
@@ -13,6 +14,11 @@ from aiortc.rtcrtpsender import RTCRtpSender
 from aiortc.contrib.media import MediaRecorder
 # from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
+
+from subprocess import Popen
+
+external_media_player_cmd = ['ffplay', '-f', 'wav', '-']
+external_media_player_process = Popen(external_media_player_cmd, stdin=subprocess.PIPE)
 
 def getUID():
     return 2
@@ -36,9 +42,11 @@ class IceCandidate:
 
 SOCKET_IO_NAMESPACE = '/live_cam'
 
-SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
+# SOCKET_IO_SERVER_ADDRESS = f"http://{sys.argv[1]}"
+SOCKET_IO_SERVER_ADDRESS = f"https://{sys.argv[1]}"
 
-sio = socketio.AsyncClient()
+
+sio = socketio.AsyncClient(ssl_verify=False)
 pc = None
 
 class IncomingMicStreamTrack(MediaStreamTrack):
@@ -150,7 +158,8 @@ async def createRTCConnection():
     async def onTrack(track):
         pprint(track)
         # incoming_mic_stream = IncomingMicStreamTrack(track)
-        recorder = MediaRecorder('my_recording.mp3')
+        recorder = MediaRecorder(external_media_player_process.stdin,
+                                 format='wav')
         recorder.addTrack(track)
         await recorder.start()
 
@@ -160,6 +169,9 @@ async def createRTCConnection():
 async def start_client():
     await sio.connect(f"{SOCKET_IO_SERVER_ADDRESS}",
                 namespaces=[SOCKET_IO_NAMESPACE], transports=["websocket"])
+
+    # clvc_cmd = ['cvlc', 
+    # clvc_process 
 
     await sio.wait()
 
