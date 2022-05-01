@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+from uuid import uuid4
 from PIL import Image
 from io import BytesIO
 from pathlib import PosixPath
@@ -32,6 +33,11 @@ from time import time
 
 engine = pyttsx3.init()
 
+known_faces = read_known_faces_from_directory('./known_faces')
+
+adding_unknown_person = False
+last_unknown_person = None
+
 async def handle_faces_general(client: Client, message: Message):
     known_faces = read_known_faces_from_directory('./known_faces')
     video_face_detector = GeneralFaceDetectorCamera()
@@ -49,11 +55,12 @@ async def handle_faces_general(client: Client, message: Message):
             await client.send_photo(message.chat.id, "pic.jpg",
                                     caption=face.name)
 
+        # TODO: Replace it with a sane algorithm that waits until the last face
+        # go out of frame and replaced by a new one.
         await asyncio.sleep(3)
 
 async def handle_faces_rpi(client: Client, message: Message):
     i = 0
-    known_faces = read_known_faces_from_directory('./known_faces')
     video_face_detector = RPiFaceDetector("320x240")
     video_face_detector.setup_buffer(500000)
     video_face_detector.start_video_capture()
@@ -77,6 +84,10 @@ async def handle_faces_rpi(client: Client, message: Message):
 
         # await asyncio.sleep(1)
 
+# TODO: handle cases where multiple faces are present in the frame at the same
+# time
+# TODO: Make video bytes_io and use av instead of using ffmpeg command or at
+# least make it parallel
 async def handle_found_faces(client: Client, message: Message,
                          video_face_detector, found_faces):
     def caption_for_face(face):
@@ -85,26 +96,49 @@ async def handle_found_faces(client: Client, message: Message,
         else:
             return "Stranger detected"
 
-    if found_faces:
-        video_face_detector.save_captured_video(3, 'motion.h264')
-        # TODO: Increase convertion performance using hardware
-        convert_h264_to_mp4('motion.h264')
-        print("converted Captured video")
+    if not found_faces:
+        return
+
+    face = found_faces[0]
+    video_face_detector.save_captured_video(3, 'motion.h264')
+    # TODO: Increase convertion performance using hardware
+    convert_h264_to_mp4('motion.h264')
+    print("converted Captured video")
+    face.name = face.name if face.isKnown else "Unknown"
+    engine.say(face.name)
+    engine.runAndWait()
+    await client.send_video(message.chat.id, 'motion.mp4',
+                            caption=caption_for_face(face))
+
+    # This would change after multiple face in frame is implemented
 
 
-    for face in found_faces:
-        # await client.send_message(message.chat.id, f"{face.name} Seen")
-        # frame_photo = cv2.imencode('.jpg', frame)[1]
-        face.name = face.name if face.isKnown else "Unknown"
-        engine.say(face.name)
-        engine.runAndWait()
-        # cv2.imwrite(f"pic.jpg", frame)
-        # video_face_detector.
-        await client.send_video(message.chat.id, 'motion.mp4',
-                                caption=caption_for_face(face))
+    if not face.isKnown:
+        await handle_not_known_face(client, message, face)
 
-    if found_faces:
-        video_face_detector.clear_video_buffer()
+    # await client.send_message(message.chat.id, f"{face.name} Seen")
+    # frame_photo = cv2.imencode('.jpg', frame)[1]
+    # cv2.imwrite(f"pic.jpg", frame)
+    # video_face_detector.
+
+    video_face_detector.clear_video_buffer()
+
+async def handle_not_known_face(client: Client, message: Message, face: Face):
+    global last_unknown_person, adding_unknown_person
+    client.send_message(message.chat.id, "You can add this person to known \
+    ones by supplying a name")
+    last_unknown_person = face
+    adding_unknown_person = True
+
+def add_unknown_person(name):
+    global adding_unknown_person
+    global last_unknown_person
+    new_known_face = KnownFace(uuid4().int, last_unknown_person.face_encoding,
+                               name, '')
+    known_faces.append(new_known_face)
+    adding_unknown_person = False
+    last_unknown_person = None
+
 
 
 async def start(client: Client, message: Message):
@@ -139,3 +173,7 @@ async def handle_command(user_query: str, client: Client, message: Message):
     elif user_query == 'stop':
         # my_camera.stop();
         pass
+
+    else:
+        if adding_unknown_person:
+            add_unknown_person(user_query)

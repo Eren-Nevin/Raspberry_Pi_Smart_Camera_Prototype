@@ -22,7 +22,7 @@ class Face:
         self.isKnown = isKnown
 
 class KnownFace(Face):
-    def __init__(self, uid: int, face_encoding, name: str, pic_path: str):
+    def __init__(self, uid: int, face_encoding, name: str, pic_path: str=''):
         super().__init__(uid, face_encoding, True)
         self.name = name
         self.pic_path = pic_path
