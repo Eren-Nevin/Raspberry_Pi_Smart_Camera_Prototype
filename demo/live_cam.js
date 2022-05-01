@@ -213,10 +213,20 @@ async function createPeerConnection() {
 
   // This sets that this connection has capacity to receive video
   active_pc.addTransceiver("video", { direction: "recvonly" });
+  active_pc.addTransceiver("audio", { direction: "sendrecv" });
+
+// active_pc.addTrack()
+    //
+
+    let remoteStream = new MediaStream();
 
   active_pc.addEventListener("track", (evt) => {
-    videoElement.srcObject = evt.streams[0];
+      evt.streams[0].getTracks().forEach(track => {
+          console.log(track)
+          remoteStream.addTrack(track)
+      })
   });
+    videoElement.srcObject = remoteStream
 
   console.log("Active PC Created!");
 }

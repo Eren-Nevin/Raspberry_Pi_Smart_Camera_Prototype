@@ -60,6 +60,14 @@ def create_media_stream_track():
     relay = MediaRelay()
     return relay.subscribe(webcam.video, buffered=False)
 
+def create_microphone_media_stream_track():
+    # player = MediaPlayer('hw:1,0', format='alsa', options={'channels': '1', 'sample_rate': '44000'})
+    player = MediaPlayer('Welcome.mp3')
+    return player.audio
+    # relay = MediaRelay()
+    # return relay.subscribe(player.audio, buffered=False)
+
+
 async def createRTCConnection():
     global pc
     global data_channel
@@ -141,6 +149,7 @@ async def newOfferReceived(message):
     video_sender = pc.addTrack(create_media_stream_track())
 
 
+
     # Transcoding the video to make it use less bandwidth and have less latency
     selected_codec = 'video/H264'
     codecs = RTCRtpSender.getCapabilities('video').codecs
@@ -150,6 +159,16 @@ async def newOfferReceived(message):
         [codec for codec in codecs if codec.mimeType == selected_codec]
     )
 
+    # audio_sender = pc.addTrack(create_microphone_media_stream_track())
+
+    # Transcoding the video to make it use less bandwidth and have less latency
+    # selected_codec = 'audio/opus'
+    # codecs = RTCRtpSender.getCapabilities('audio').codecs
+    # transceiver = next(t for t in pc.getTransceivers() if t.sender ==
+    #                    audio_sender)
+    # transceiver.setCodecPreferences(
+    #     [codec for codec in codecs if codec.mimeType == selected_codec]
+    # )
 
     print("Creating SDP")
     offerSDP = RTCSessionDescription(sdp=offer['sdp'], type=offer['con_type'])
