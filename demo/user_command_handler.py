@@ -1,11 +1,16 @@
+import shutil
+import subprocess
 from PIL import Image
 from io import BytesIO
 from pathlib import PosixPath
 from pyrogram import Client, filters
 from pyrogram.types.messages_and_media.message import Message
 from webcam_face_detect import RPiFaceDetector, GeneralFaceDetectorCamera, Face, KnownFace, read_known_faces_from_directory
+# from audio_player import say
+import pyttsx3
 import cv2
 import asyncio
+import os
 
 from time import time
 
@@ -24,6 +29,8 @@ from time import time
 #         my_camera.stop();
 
 # found_one = False
+
+engine = pyttsx3.init()
 
 async def handle_faces_general(client: Client, message: Message):
     known_faces = read_known_faces_from_directory('./known_faces')
@@ -45,31 +52,76 @@ async def handle_faces_general(client: Client, message: Message):
         await asyncio.sleep(3)
 
 async def handle_faces_rpi(client: Client, message: Message):
+    i = 0
     known_faces = read_known_faces_from_directory('./known_faces')
     video_face_detector = RPiFaceDetector("320x240")
+    video_face_detector.setup_buffer(500000)
+    video_face_detector.start_video_capture()
     while True:
+        if os.path.exists('motion.mp4'): os.remove('motion.mp4')
+        if os.path.exists('pic.jpg'): os.remove('pic.jpg')
         rgb_small_frame = video_face_detector.capture_frame()
-        # bytes_io = BytesIO(rgb_small_frame.tobytes())
+        img_bytes_io = BytesIO()
+        # video_bytes_io = BytesIO()
         img = Image.fromarray(rgb_small_frame)
         img.save("pic.jpg")
+        # img.save(img_bytes_io, 'JPEG')
 
         found_face_locations, found_face_encodings =\
             video_face_detector.detect_faces(rgb_small_frame)
         found_faces = video_face_detector.recognize_faces(known_faces,
                                                           found_face_encodings)
-        for face in found_faces:
-            # await client.send_message(message.chat.id, f"{face.name} Seen")
-            # frame_photo = cv2.imencode('.jpg', frame)[1]
-            face.name = face.name if face.isKnown else "Unknown"
-            # cv2.imwrite(f"pic.jpg", frame)
-            await client.send_photo(message.chat.id, "pic.jpg",
-                                    caption=face.name)
 
-        await asyncio.sleep(3)
+        await handle_found_faces(client, message, video_face_detector, found_faces)
+
+
+        # await asyncio.sleep(1)
+
+async def handle_found_faces(client: Client, message: Message,
+                         video_face_detector, found_faces):
+    def caption_for_face(face):
+        if face.isKnown:
+            return f"{face.name} arrived"
+        else:
+            return "Stranger detected"
+
+    if found_faces:
+        video_face_detector.save_captured_video(3, 'motion.h264')
+        # TODO: Increase convertion performance using hardware
+        convert_h264_to_mp4('motion.h264')
+        print("converted Captured video")
+
+
+    for face in found_faces:
+        # await client.send_message(message.chat.id, f"{face.name} Seen")
+        # frame_photo = cv2.imencode('.jpg', frame)[1]
+        face.name = face.name if face.isKnown else "Unknown"
+        engine.say(face.name)
+        engine.runAndWait()
+        # cv2.imwrite(f"pic.jpg", frame)
+        # video_face_detector.
+        await client.send_video(message.chat.id, 'motion.mp4',
+                                caption=caption_for_face(face))
+
+    if found_faces:
+        video_face_detector.clear_video_buffer()
+
 
 async def start(client: Client, message: Message):
     await handle_faces_rpi(client, message)
 
+
+def convert_h264_to_mp4(input_file):
+    ffmpeg_arg = [
+        "ffmpeg", "-r", "30", "-i", input_file, '-vcodec', 'copy',\
+        f"./{input_file.split('.')[0]}.mp4"
+    ]
+
+    ffmpeg_process = subprocess.Popen(ffmpeg_arg,
+                                      stderr=subprocess.DEVNULL,
+                                      )
+
+    ffmpeg_process.wait()
 
 
 

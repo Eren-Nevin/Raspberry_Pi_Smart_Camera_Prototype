@@ -8,7 +8,7 @@ bin/
 *.session
 *.session-journal
 
-# Any video or image
+# Any video or image or audio
 *.jpg
 *.jpeg
 *.png
@@ -16,6 +16,8 @@ bin/
 *.mp4
 *.mov
 *.ts
+
+*.mp3
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

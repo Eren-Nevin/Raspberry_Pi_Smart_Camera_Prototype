@@ -114,6 +114,23 @@ class RPiFaceDetector:
         self.camera.capture(self.output, format="rgb")
         return self.output
 
+    def setup_buffer(self, size):
+        self.recording_buffer = picamera.PiCameraCircularIO(self.camera,
+                                                            size=size)
+
+    def start_video_capture(self):
+        self.camera.start_recording(self.recording_buffer, format='h264')
+
+    def clear_video_buffer(self):
+        self.recording_buffer.clear()
+
+    def save_captured_video(self, seconds, output):
+        self.camera.wait_recording(seconds)
+        self.recording_buffer.copy_to(output)
+
+    def stop_video_capture(self):
+        self.camera.stop_recording()
+
     def detect_faces(self, rgb_small_frame):
         return self.detector.detect_faces(rgb_small_frame)
 
