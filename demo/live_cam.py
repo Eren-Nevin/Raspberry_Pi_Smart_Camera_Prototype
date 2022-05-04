@@ -9,7 +9,7 @@ from aiortc.mediastreams import MediaStreamTrack
 import socketio
 from aiortc import RTCPeerConnection, RTCSessionDescription
 from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
-from aiortc.contrib.media import MediaPlayer, MediaRelay
+from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRelay
 from aiortc.rtcrtpsender import RTCRtpSender
 from aiortc.contrib.media import MediaRecorder
 # from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
@@ -17,8 +17,12 @@ from aiortc.rtcrtpreceiver import RemoteStreamTrack
 
 from subprocess import Popen
 
-external_media_player_cmd = ['ffplay', '-f', 'wav', '-']
-external_media_player_process = Popen(external_media_player_cmd, stdin=subprocess.PIPE)
+# Why wav or pulse doesn't work but only mp3 works?
+external_media_player_cmd = ['ffplay', '-f', 'mp3', '-i', '-']
+external_media_player_process = Popen(external_media_player_cmd,
+                                      stdin=subprocess.PIPE,
+                                      stdout=subprocess.DEVNULL,
+                                      stderr=subprocess.DEVNULL)
 
 def getUID():
     return 2
@@ -153,13 +157,12 @@ async def createRTCConnection():
         pprint(f"Signaling State is {pc.signalingState}")
 
 
-    # Adding mic callbacks that would play the audio returned from browser
+    # Receive Mic
     @pc.on("track")
     async def onTrack(track):
-        pprint(track)
-        # incoming_mic_stream = IncomingMicStreamTrack(track)
+        pprint(track.kind)
         recorder = MediaRecorder(external_media_player_process.stdin,
-                                 format='wav')
+                                 format='mp3')
         recorder.addTrack(track)
         await recorder.start()
 
@@ -169,9 +172,6 @@ async def createRTCConnection():
 async def start_client():
     await sio.connect(f"{SOCKET_IO_SERVER_ADDRESS}",
                 namespaces=[SOCKET_IO_NAMESPACE], transports=["websocket"])
-
-    # clvc_cmd = ['cvlc', 
-    # clvc_process 
 
     await sio.wait()
 
@@ -192,12 +192,14 @@ async def newOfferReceived(message):
     # Transcoding the video to make it use less bandwidth and have less latency
     selected_codec = 'video/H264'
     codecs = RTCRtpSender.getCapabilities('video').codecs
+    pprint(codecs)
     transceiver = next(t for t in pc.getTransceivers() if t.sender ==
                        video_sender)
     transceiver.setCodecPreferences(
         [codec for codec in codecs if codec.mimeType == selected_codec]
     )
 
+    # Send Mic
     audio_sender = pc.addTrack(create_microphone_media_stream_track())
 
     # Transcoding the video to make it use less bandwidth and have less latency
@@ -253,4 +255,3 @@ try:
 
 except Exception as e:
     print(e)
-

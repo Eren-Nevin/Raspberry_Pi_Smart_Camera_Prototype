@@ -64,6 +64,7 @@ async def handle_faces_rpi(client: Client, message: Message):
     video_face_detector = RPiFaceDetector("320x240")
     video_face_detector.setup_buffer(500000)
     video_face_detector.start_video_capture()
+    print("starting capture")
     # TODO: Remove this maybe to add parallelism
     while True:
         if os.path.exists('motion.mp4'): os.remove('motion.mp4')
@@ -93,9 +94,9 @@ async def handle_found_faces(client: Client, message: Message,
                          video_face_detector, found_faces):
     def caption_for_face(face):
         if face.isKnown:
-            return f"{face.name} arrived"
+            return f"{face.name}"
         else:
-            return "Stranger detected"
+            return "Stranger"
 
     if not found_faces:
         return

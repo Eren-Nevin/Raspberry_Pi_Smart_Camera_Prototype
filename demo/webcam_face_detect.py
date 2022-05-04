@@ -118,6 +118,7 @@ class RPiFaceDetector:
         self.recording_buffer = picamera.PiCameraCircularIO(self.camera,
                                                             size=size)
 
+    # TODO: Add splitter port support
     def start_video_capture(self):
         self.camera.start_recording(self.recording_buffer, format='h264')
 
