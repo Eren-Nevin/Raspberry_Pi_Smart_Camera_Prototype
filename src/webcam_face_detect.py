@@ -1,3 +1,4 @@
+import picamera
 from pprint import pprint
 import face_recognition
 import cv2
@@ -10,6 +11,8 @@ import os
 import uuid
 from typing import Dict, List
 
+from time import sleep
+
 KNOWN_FACES_DIRECTORY_PATH = './known_faces'
 
 class Face:
@@ -19,7 +22,7 @@ class Face:
         self.isKnown = isKnown
 
 class KnownFace(Face):
-    def __init__(self, uid: int, face_encoding, name: str, pic_path: str):
+    def __init__(self, uid: int, face_encoding, name: str, pic_path: str=''):
         super().__init__(uid, face_encoding, True)
         self.name = name
         self.pic_path = pic_path
@@ -45,25 +48,9 @@ def read_known_faces_from_directory(m_dir=KNOWN_FACES_DIRECTORY_PATH):
 
     return faces
 
-
-class VideoFaceDetector:
+class FaceDetector:
     def __init__(self):
-        # self.process_this_frame = True
-        # TODO: Is using picamera better than cv2 on rapsberry pi?
-        self.video_capture = cv2.VideoCapture(0)
         pass
-
-    def capture_frame(self):
-        # Grab a single frame of video
-        ret, frame = self.video_capture.read()
-
-        # Resize frame of video to 1/4 size for faster face recognition processing
-        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-
-        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-        rgb_small_frame = small_frame[:, :, ::-1]
-
-        return frame, rgb_small_frame
 
     def detect_faces(self, rgb_small_frame):
             found_face_locations = []
@@ -108,6 +95,75 @@ class VideoFaceDetector:
 
         return found_faces
 
+class RPiFaceDetector:
+    def __init__(self, resolution:str):
+        self.width, self.height = map(int, resolution.split("x"))
+        self.camera = picamera.PiCamera()
+        self.camera.resolution = (self.width, self.height)
+        self.output = np.empty((self.height, self.width, 3), dtype=np.uint8)
+
+        self.detector = FaceDetector()
+
+    def start_camera(self):
+        self.camera.start_preview()
+        self.camera.preview.window = 0, 0, 0, 0
+        sleep(2)
+
+    def capture_frame(self):
+        # Grab a single frame of video
+        self.camera.capture(self.output, format="rgb")
+        return self.output
+
+    def setup_buffer(self, size):
+        self.recording_buffer = picamera.PiCameraCircularIO(self.camera,
+                                                            size=size)
+
+    # TODO: Add splitter port support
+    def start_video_capture(self):
+        self.camera.start_recording(self.recording_buffer, format='h264')
+
+    def clear_video_buffer(self):
+        self.recording_buffer.clear()
+
+    def save_captured_video(self, seconds, output):
+        self.camera.wait_recording(seconds)
+        self.recording_buffer.copy_to(output)
+
+    def stop_video_capture(self):
+        self.camera.stop_recording()
+
+    def detect_faces(self, rgb_small_frame):
+        return self.detector.detect_faces(rgb_small_frame)
+
+    def recognize_faces(self, known_faces, found_face_encodings):
+        return self.detector.recognize_faces(known_faces, found_face_encodings)
+
+class GeneralFaceDetectorCamera:
+    def __init__(self):
+        # self.process_this_frame = True
+        # TODO: Is using picamera better than cv2 on rapsberry pi?
+        self.video_capture = cv2.VideoCapture(0)
+        self.detector = FaceDetector()
+        pass
+
+    def capture_frame(self):
+        # Grab a single frame of video
+        ret, frame = self.video_capture.read()
+
+        # Resize frame of video to 1/4 size for faster face recognition processing
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
+        rgb_small_frame = small_frame[:, :, ::-1]
+
+        return frame, rgb_small_frame
+
+    def detect_faces(self, rgb_small_frame):
+        return self.detector.detect_faces(rgb_small_frame)
+
+    def recognize_faces(self, known_faces, found_face_encodings):
+        return self.detector.recognize_faces(known_faces, found_face_encodings)
+
     # Display the results
     def show_result(self, frame, face_locations, found_faces):
 
@@ -138,7 +194,7 @@ class VideoFaceDetector:
 
 if __name__ == '__main__':
     known_faces = read_known_faces_from_directory()
-    videoFaceDetector = VideoFaceDetector()
+    videoFaceDetector = GeneralFaceDetectorCamera()
     process_this_frame = True
     last_found_faces = []
     last_found_face_locations = []

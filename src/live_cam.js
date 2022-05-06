@@ -1,16 +1,32 @@
-let signalingServerAddressTextBox = document.getElementById(
-  "signaling-server-address"
-);
-let uidTextBox = document.getElementById("uid");
-let destUidTextBox = document.getElementById("destination_uid");
-
-let videoElement = document.getElementById('video')
+let videoElement = document.getElementById("video");
 
 let socket = null;
 let active_pc = null;
 let data_channel = null;
 
+let localStream = null;
+
 const STUN_SERVERS = ["stun:stun.l.google.com:19302"];
+const OPEN_RELAY_SERVERS = [
+  {
+    urls: "stun:openrelay.metered.ca:80",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:80",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:443",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+  {
+    urls: "turn:openrelay.metered.ca:443?transport=tcp",
+    username: "openrelayproject",
+    credential: "openrelayproject",
+  },
+];
 
 const SIGNALING_SERVER_SOCKETIO_NAMESPACE = "live_cam";
 
@@ -42,18 +58,15 @@ class IceCandidate {
 }
 
 function getSignalingServerAddress() {
-  return signalingServerAddressTextBox.value;
-}
-function getSignalingServerAddress(){
-    return signalingServerAddressTextBox.value
+  return "dinkedpawn.com:4311";
 }
 
 function readUID() {
-  return uidTextBox.value;
+  return 1;
 }
 
 function readDestUID() {
-  return destUidTextBox.value;
+  return 2;
 }
 
 function createSocketIO() {
@@ -173,31 +186,10 @@ function handleICEGatheringStateChangeEvent(event) {
 
 async function createPeerConnection() {
   let config = {
-    iceServers: [
-      {
-        urls: "stun:openrelay.metered.ca:80",
-      },
-      {
-        urls: "turn:openrelay.metered.ca:80",
-        username: "openrelayproject",
-        credential: "openrelayproject",
-      },
-      {
-        urls: "turn:openrelay.metered.ca:443",
-        username: "openrelayproject",
-        credential: "openrelayproject",
-      },
-      {
-        urls: "turn:openrelay.metered.ca:443?transport=tcp",
-        username: "openrelayproject",
-        credential: "openrelayproject",
-      },
-    ],
+    iceServers: OPEN_RELAY_SERVERS,
   };
 
-  if (!document.getElementById("use-turn").checked) {
-    config.iceServers = [{ urls: STUN_SERVERS }];
-  }
+  config.iceServers = [{ urls: STUN_SERVERS }];
 
   active_pc = new RTCPeerConnection(config);
   active_pc.addEventListener("negotiationneeded", handleNegotiationNeededEvent);
@@ -221,12 +213,22 @@ async function createPeerConnection() {
     data_channel.onclose = onDataMessageClose;
   });
 
-    // This sets that this connection has capacity to receive video
-active_pc.addTransceiver('video', {direction: 'recvonly'})
+  // This sets that this connection has capacity to receive video
+  active_pc.addTransceiver("video", { direction: "recvonly" });
+  active_pc.addTransceiver("audio", { direction: "sendrecv" });
 
-    active_pc.addEventListener('track', (evt) => {
-        videoElement.srcObject = evt.streams[0]
-    })
+  // active_pc.addTrack()
+  //
+
+  let remoteStream = new MediaStream();
+
+  active_pc.addEventListener("track", (evt) => {
+    evt.streams[0].getTracks().forEach((track) => {
+      console.log(track);
+      remoteStream.addTrack(track);
+    });
+  });
+  videoElement.srcObject = remoteStream;
 
   console.log("Active PC Created!");
 }
@@ -245,7 +247,7 @@ function onDataMessageClose() {
 
 async function callPeer() {
   try {
-      await start()
+    await start();
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
 
@@ -256,6 +258,18 @@ async function callPeer() {
     dc.onclose = onDataMessageClose;
     dc.onopen = onDataMessageOpen;
     dc.onmessage = onDataMessage;
+
+    // Adding Microphone
+
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+
+    localStream.getTracks().forEach((track) => {
+        console.log("Adding mic track");
+      active_pc.addTrack(track, localStream);
+    });
       
   } catch (e) {
     console.log(e);
@@ -300,6 +314,9 @@ async function closeRTCConnection() {
 }
 
 async function start() {
+  socket = null;
+  active_pc = null;
+  data_channel = null;
   createSocketIO();
   setSocketEventListeners();
   connectSocket();
