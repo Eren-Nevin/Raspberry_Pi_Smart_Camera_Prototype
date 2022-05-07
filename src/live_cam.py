@@ -47,11 +47,9 @@ if not use_native_audio_playing:
     # TODO: Make ffplay doesn't pause for display
     external_media_player_process = Popen(external_media_player_cmd,
                                           stdin=subprocess.PIPE,
-                                          stdout=subprocess.DEVNULL,
-                                          stderr=subprocess.DEVNULL,
+                                          # stdout=subprocess.DEVNULL,
+                                          # stderr=subprocess.DEVNULL,
                                           )
-    print(external_media_player_process.pid)
-
 def getUID():
     return 2
 
