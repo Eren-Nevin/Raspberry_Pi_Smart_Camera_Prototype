@@ -50,8 +50,6 @@ if not use_native_audio_playing:
                                           stdout=subprocess.DEVNULL,
                                           stderr=subprocess.DEVNULL,
                                           )
-    print(external_media_player_process.pid)
-
 def getUID():
     return 2
 
