@@ -2,6 +2,7 @@ let videoElement = document.getElementById("video");
 
 let socket = null;
 let active_pc = null;
+let sent_offer = null;
 let data_channel = null;
 
 let localStream = null;
@@ -120,11 +121,16 @@ async function waitForIceGathering() {
     }
   });
 
+
   await promise;
   return;
 }
 async function handleNegotiationNeededEvent() {
   console.log("Negotiation Needed");
+    if (sent_offer) {
+        console.log("Offer Already Sent")
+        return
+    }
   try {
     let new_offer = await active_pc.createOffer();
     if (active_pc.signalingState != "stable") {
@@ -151,6 +157,8 @@ async function handleNegotiationNeededEvent() {
 
     console.log("-> Sending offer to remote peer");
     socket.emit("offer", offer);
+
+    sent_offer = new_offer
   } catch (error) {
     console.log("Error in Negotiation Handling");
     console.log(error);
@@ -247,7 +255,7 @@ function onDataMessageClose() {
 
 async function callPeer() {
   try {
-    await start();
+    // await start();
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
 
@@ -322,3 +330,5 @@ async function start() {
   connectSocket();
   // await createPeerConnection()
 }
+
+start()
