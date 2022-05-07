@@ -19,7 +19,7 @@ from aiortc.rtcrtpreceiver import RemoteStreamTrack
 from subprocess import Popen
 
 # Currently doesn't work
-from audio_player import RawAudioRecorder
+# from audio_player import RawAudioRecorder
 
 use_data_channel = False
 use_mic = True
@@ -40,10 +40,17 @@ if not use_native_audio_playing:
                                  '-i', '-', '-f', audio_format,
                                  '-acodec','pcm_s16le'
                                  ]
+    # IMPORTANT: Remember that ffplay needs to find a dispaly to run, otherwise
+    # it pauses asking: Could not initialize SDL - No available video device
+    # This means before turning on the camera, you need to plug an hdmi to it
+    # for now.
+    # TODO: Make ffplay doesn't pause for display
     external_media_player_process = Popen(external_media_player_cmd,
                                           stdin=subprocess.PIPE,
                                           stdout=subprocess.DEVNULL,
-                                          stderr=subprocess.DEVNULL)
+                                          stderr=subprocess.DEVNULL,
+                                          )
+    print(external_media_player_process.pid)
 
 def getUID():
     return 2
@@ -101,6 +108,9 @@ def create_media_stream_track(resolution: str):
 def create_microphone_media_stream_track():
     player = MediaPlayer("default", format="pulse")
     return player.audio
+    # TODO: Do we need relay to decrease latency?
+    # relay = MediaRelay()
+    # return relay.subscribe(player.audio, buffered=False)
 
 
 async def createRTCConnection():
