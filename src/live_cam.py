@@ -15,14 +15,35 @@ from aiortc.contrib.media import MediaRecorder
 # from aiortc.contrib.signaling import candidate_from_sdp, candidate_to_sdp
 from aiortc.rtcrtpreceiver import RemoteStreamTrack
 
+
 from subprocess import Popen
 
-# Why wav or pulse doesn't work but only mp3 works?
-external_media_player_cmd = ['ffplay', '-f', 'mp3', '-i', '-']
-external_media_player_process = Popen(external_media_player_cmd,
-                                      stdin=subprocess.PIPE,
-                                      stdout=subprocess.DEVNULL,
-                                      stderr=subprocess.DEVNULL)
+# Currently doesn't work
+from audio_player import RawAudioRecorder
+
+use_data_channel = False
+use_mic = True
+use_speaker = True
+audio_format = 'wav'
+
+video_resolution = "640x480"
+
+# Currently we can't play audio frames directly, if we could, we change this to
+# True and thus not need to create MediaRecorder object and ffplay process
+use_native_audio_playing = False
+
+
+# Its so important to have nobuffer and low_delay flags for low latency playback
+if not use_native_audio_playing:
+    external_media_player_cmd = ['ffplay', '-fflags', 'nobuffer',
+                                 '-flags', 'low_delay',
+                                 '-i', '-', '-f', audio_format,
+                                 '-acodec','pcm_s16le'
+                                 ]
+    external_media_player_process = Popen(external_media_player_cmd,
+                                          stdin=subprocess.PIPE,
+                                          stdout=subprocess.DEVNULL,
+                                          stderr=subprocess.DEVNULL)
 
 def getUID():
     return 2
@@ -53,23 +74,15 @@ SOCKET_IO_SERVER_ADDRESS = f"https://{sys.argv[1]}"
 sio = socketio.AsyncClient(ssl_verify=False)
 pc = None
 
-class IncomingMicStreamTrack(MediaStreamTrack):
-
-    def __init__(self, track):
-        super().__init__()
-
-        self.track = track
-    async def recv(self):
-        frame = await self.track.recv()
-
 # We can use the picamera module to create a recording based on our specific
 # needs and stream it somehow (e.g. socket, BytesIO, ...) to MediaPlayer class.
 # Currently, since we're behind schedule, we are reading directly from source
 # device.
 # Note that the buffered=False is the reason we can stream virtually lag free
-def create_media_stream_track():
+def create_media_stream_track(resolution: str):
     global webcam
-    options = {"framerate": "30", "video_size": "640x480"}
+    options = {"framerate": "30", "video_size": resolution, 'input_format':
+               'h264', 'vcodec': 'copy'}
     if platform.system() == "Darwin":
         webcam = MediaPlayer(
             "default:none", format="avfoundation", options=options
@@ -84,14 +97,10 @@ def create_media_stream_track():
     relay = MediaRelay()
     return relay.subscribe(webcam.video, buffered=False)
 
+# Capture camera mic to create a media track
 def create_microphone_media_stream_track():
-    # player = MediaPlayer('hw:1,0', format='alsa', options={'channels': '1', 'sample_rate': '44000'})
     player = MediaPlayer("default", format="pulse")
-    # player = MediaPlayer('Welcome.mp3')
-
     return player.audio
-    # relay = MediaRelay()
-    # return relay.subscribe(player.audio, buffered=False)
 
 
 async def createRTCConnection():
@@ -121,11 +130,12 @@ async def createRTCConnection():
     pc = RTCPeerConnection(google_rtc_config)
     # pc = RTCPeerConnection(rtc_open_relay_config)
 
-    
     # TODO: Do we need to force codec?
 
     @pc.on("datachannel")
     def on_datachannel(channel):
+        if not use_data_channel:
+            return
         print("Data Channel Is Open?")
         print(channel)
 
@@ -141,7 +151,8 @@ async def createRTCConnection():
         if pc.connectionState == "failed":
             if pc:
                 await pc.close()
-                if recorder:
+                #TODO: Fix recorder is not defined
+                if use_speaker and recorder:
                     recorder.stop()
 
     @pc.on("iceconnectionstatechange")
@@ -161,10 +172,26 @@ async def createRTCConnection():
     @pc.on("track")
     async def onTrack(track):
         pprint(track.kind)
-        recorder = MediaRecorder(external_media_player_process.stdin,
-                                 format='mp3')
-        recorder.addTrack(track)
-        await recorder.start()
+        if not use_speaker:
+            return
+
+        # Refer to use_native_audio_playing. 
+        if use_native_audio_playing:
+            pass
+            # audio_player = AudioPlayer()
+            # audio_player.addTrack(track)
+            # await audio_player.start()
+
+        else:
+            # TODO: Use the inheritance version after it works
+            # recorder = RawAudioRecorder(external_media_player_process.stdin,
+            #                          format=audio_format,
+            #                          )
+            recorder = MediaRecorder(external_media_player_process.stdin,
+                                     format=audio_format,
+                                     )
+            recorder.addTrack(track)
+            await recorder.start()
 
     print("Active PC Created")
 
@@ -176,40 +203,25 @@ async def start_client():
     await sio.wait()
 
 async def newOfferReceived(message):
-    if pc:
-        await pc.close()
-        webcam.video.stop()
+    print("New Offer Received")
+    # if pc:
+    #     await pc.close()
+    #     webcam.video.stop()
     await createRTCConnection()
     offer = message
     if int(offer['d_uid']) != getUID():
         pprint("Offer not mine")
         return
 
-    video_sender = pc.addTrack(create_media_stream_track())
 
+    # Send camera video
+    video_sender = pc.addTrack(create_media_stream_track(video_resolution))
 
-
-    # Transcoding the video to make it use less bandwidth and have less latency
-    selected_codec = 'video/H264'
-    codecs = RTCRtpSender.getCapabilities('video').codecs
-    pprint(codecs)
-    transceiver = next(t for t in pc.getTransceivers() if t.sender ==
-                       video_sender)
-    transceiver.setCodecPreferences(
-        [codec for codec in codecs if codec.mimeType == selected_codec]
-    )
 
     # Send Mic
-    audio_sender = pc.addTrack(create_microphone_media_stream_track())
+    if use_mic:
+        audio_sender = pc.addTrack(create_microphone_media_stream_track())
 
-    # Transcoding the video to make it use less bandwidth and have less latency
-    # selected_codec = 'audio/opus'
-    # codecs = RTCRtpSender.getCapabilities('audio').codecs
-    # transceiver = next(t for t in pc.getTransceivers() if t.sender ==
-    #                    audio_sender)
-    # transceiver.setCodecPreferences(
-    #     [codec for codec in codecs if codec.mimeType == selected_codec]
-    # )
 
     print("Creating SDP")
     offerSDP = RTCSessionDescription(sdp=offer['sdp'], type=offer['con_type'])
