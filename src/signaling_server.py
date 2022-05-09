@@ -48,8 +48,24 @@ def index():
     # return "Hello World"
 
 @app.route('/live_cam.js')
-def serve_js():
+def serve_main_js():
     m_response = send_file('./live_cam.js', etag=False)
+    m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    m_response.headers["Expires"] = '0'
+    m_response.headers["Pragma"] = "no-cache"
+    return m_response
+
+@app.route('/signaling.js')
+def serve_signaling_js():
+    m_response = send_file('./signaling.js', etag=False)
+    m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    m_response.headers["Expires"] = '0'
+    m_response.headers["Pragma"] = "no-cache"
+    return m_response
+
+@app.route('/footage.js')
+def serve_footage_js():
+    m_response = send_file('./footage.js', etag=False)
     m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
     m_response.headers["Expires"] = '0'
     m_response.headers["Pragma"] = "no-cache"

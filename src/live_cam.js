@@ -1,11 +1,4 @@
-let videoElement = document.getElementById("video");
-
-let socket = null;
-let active_pc = null;
-let sent_offer = null;
-let data_channel = null;
-
-let localStream = null;
+import { Signaling } from "./signaling.js";
 
 const STUN_SERVERS = ["stun:stun.l.google.com:19302"];
 const OPEN_RELAY_SERVERS = [
@@ -29,79 +22,19 @@ const OPEN_RELAY_SERVERS = [
   },
 ];
 
-const SIGNALING_SERVER_SOCKETIO_NAMESPACE = "live_cam";
-
-class OfferOrAnswer {
-  uid;
-  d_uid;
-  sdp;
-  con_type;
-
-  constructor(uid, d_uid, sdp, con_type) {
-    this.uid = uid;
-    this.d_uid = d_uid;
-    this.sdp = sdp;
-    this.con_type = con_type;
-  }
-}
-
-class IceCandidate {
-  uid;
-  d_uid;
-  candidate;
-  con_type;
-  constructor(uid, d_uid, candidate, con_type) {
-    this.uid = uid;
-    this.d_uid = d_uid;
-    this.candidate = candidate;
-    this.con_type = con_type;
-  }
-}
-
-function getSignalingServerAddress() {
-  return "dinkedpawn.com:4311";
-}
-
-function readUID() {
-  return 1;
-}
-
 function readDestUID() {
   return 2;
 }
 
-function createSocketIO() {
-  serverAddress = getSignalingServerAddress();
-  socket = io(`${serverAddress}/${SIGNALING_SERVER_SOCKETIO_NAMESPACE}`, {
-    transports: ["websocket"],
-    autoConnect: false,
-  });
-}
+const videoElement = document.getElementById("video");
+document.getElementById("call-button").addEventListener("click", callPeer);
 
-function connectSocket() {
-  socket.connect();
-}
+let signaling = null;
+let active_pc = null;
+let sent_offer = null;
+let data_channel = null;
 
-function setSocketEventListeners() {
-  socket.on("connect", () => {
-    console.log("Connected To Websocket");
-  });
-
-  socket.on("new_answer", async (message) => {
-    // console.log(message);
-    await newAnswerReceived(message);
-  });
-
-  // Refer to the newIceCandidateReceived function for the reason
-  // socket.on("new_ice_candidate", async (message) => {
-  //   await newIceCandidateReceived(message);
-  // });
-
-  // Refer to the newOfferReceived function for the reason
-  // socket.on("new_offer", async (message) => {
-  //   await newOfferReceived(message);
-  // });
-}
+let localStream = null;
 
 // This is here to cancel ice trickling by waiting for all candidates to be
 // gathered before creating the offer. We're doing this because aiortc doesn't
@@ -121,16 +54,15 @@ async function waitForIceGathering() {
     }
   });
 
-
   await promise;
   return;
 }
 async function handleNegotiationNeededEvent() {
   console.log("Negotiation Needed");
-    if (sent_offer) {
-        console.log("Offer Already Sent")
-        return
-    }
+  if (sent_offer) {
+    console.log("Offer Already Sent");
+    return;
+  }
   try {
     let new_offer = await active_pc.createOffer();
     if (active_pc.signalingState != "stable") {
@@ -146,19 +78,14 @@ async function handleNegotiationNeededEvent() {
     // initial offer. This is for disabling ice trickling.
     await waitForIceGathering();
 
-    let offer = new OfferOrAnswer(
-      readUID(),
+    console.log("-> Sending offer to remote peer");
+    signaling.sendOffer(
       readDestUID(),
       active_pc.localDescription.sdp,
       active_pc.localDescription.type
     );
 
-    // document.getElementById("offer-sdp").textContent = offer.sdp;
-
-    console.log("-> Sending offer to remote peer");
-    socket.emit("offer", offer);
-
-    sent_offer = new_offer
+    sent_offer = new_offer;
   } catch (error) {
     console.log("Error in Negotiation Handling");
     console.log(error);
@@ -214,19 +141,18 @@ async function createPeerConnection() {
     "signalingstatechange",
     handleSignalingStateChangeEvent
   );
-  active_pc.addEventListener("datachannel", (ev) => {
-    data_channel = ev.channel;
-    data_channel.onmessage = onDataMessage;
-    data_channel.onopen = onDataMessageOpen;
-    data_channel.onclose = onDataMessageClose;
-  });
+
+  // This is for receiving data channels created by the peer
+  // active_pc.addEventListener("datachannel", (ev) => {
+  //   data_channel = ev.channel;
+  //   data_channel.onmessage = onDataMessage;
+  //   data_channel.onopen = onDataMessageOpen;
+  //   data_channel.onclose = onDataMessageClose;
+  // });
 
   // This sets that this connection has capacity to receive video
   active_pc.addTransceiver("video", { direction: "recvonly" });
   active_pc.addTransceiver("audio", { direction: "sendrecv" });
-
-  // active_pc.addTrack()
-  //
 
   let remoteStream = new MediaStream();
 
@@ -247,6 +173,12 @@ function onDataMessage(evt) {
 
 function onDataMessageOpen() {
   console.log(`Data Channel: Open`);
+  // TODO: Remove Heartbeat
+  setInterval(() => {
+    if (data_channel) {
+      data_channel.send("Heartbeat");
+    }
+  }, 5000);
 }
 
 function onDataMessageClose() {
@@ -255,17 +187,24 @@ function onDataMessageClose() {
 
 async function callPeer() {
   try {
+    if (active_pc !== null) {
+      await closeRTCConnection();
+      // sent_offer was used to prevent Unwanted offers being sent, now we
+      // want to send an offer, so we reset it back to null
+      sent_offer = null;
+    }
     // await start();
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
 
+    // TODO: Work on data channel config
     let dataChannelConfig = {};
 
     // TODO: Do we need certain parameters for data channel?
-    dc = active_pc.createDataChannel("chat", dataChannelConfig);
-    dc.onclose = onDataMessageClose;
-    dc.onopen = onDataMessageOpen;
-    dc.onmessage = onDataMessage;
+    data_channel = active_pc.createDataChannel("chat", dataChannelConfig);
+    data_channel.onclose = onDataMessageClose;
+    data_channel.onopen = onDataMessageOpen;
+    data_channel.onmessage = onDataMessage;
 
     // Adding Microphone
 
@@ -275,34 +214,22 @@ async function callPeer() {
     });
 
     localStream.getTracks().forEach((track) => {
-        console.log("Adding mic track");
+      console.log("Adding mic track");
       active_pc.addTrack(track, localStream);
     });
-      
   } catch (e) {
     console.log(e);
   }
 }
 
-async function newAnswerReceived(answerJson) {
+async function onAnswerReceived(uid, sdp, con_type) {
   try {
-    let answer = new OfferOrAnswer(
-      answerJson["uid"],
-      answerJson["d_uid"],
-      answerJson["sdp"],
-      answerJson["con_type"]
-    );
-
-    if (answer.d_uid == readUID()) {
-      // TODO: Do we need to create this object or the answer itself was
-      // sufficient
-      let receivedDescription = new RTCSessionDescription({
-        sdp: answer.sdp,
-        type: answer.con_type,
-      });
-      // document.getElementById("answer-sdp").textContent = answer.sdp;
-      await active_pc.setRemoteDescription(receivedDescription);
-    }
+    console.log(`Answer Received From ${uid}`);
+    let receivedDescription = new RTCSessionDescription({
+      sdp: sdp,
+      type: con_type,
+    });
+    await active_pc.setRemoteDescription(receivedDescription);
   } catch (e) {
     console.log(e);
   }
@@ -310,11 +237,11 @@ async function newAnswerReceived(answerJson) {
 
 async function closeRTCConnection() {
   try {
-    if (data_channel) {
+    if (data_channel !== null) {
       data_channel.close();
     }
-    if (active_pc) {
-      await active.close();
+    if (active_pc !== null) {
+      await active_pc.close();
     }
   } catch (error) {
     alert(error);
@@ -322,13 +249,19 @@ async function closeRTCConnection() {
 }
 
 async function start() {
-  socket = null;
+  signaling = new Signaling();
   active_pc = null;
   data_channel = null;
-  createSocketIO();
-  setSocketEventListeners();
-  connectSocket();
-  // await createPeerConnection()
+  signaling.addConnectionStateChangeHandlers(
+    () => {
+      console.log("Connected");
+    },
+    () => {},
+    () => {}
+  );
+
+  signaling.addNewAnswerHandler(onAnswerReceived);
+  signaling.connect();
 }
 
-start()
+start();

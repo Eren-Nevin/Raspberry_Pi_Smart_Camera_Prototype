@@ -28,17 +28,18 @@
 </head>
 <body>
 
-<button id="call-button"
-    onclick="callPeer()">Call</button>
+    <button id="call-button">Call</button>
 
 <div id="media">
     <h2>Live-View</h2>
     <audio id="audio" autoplay="true"></audio>
     <video id="video" autoplay="true" playsinline="true"></video>
+    <video id="footage"></video>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" crossorigin="anonymous"></script>
-<script src="live_cam.js"></script>
+<script type="module" src="signaling.js"></script>
+<script type="module" src="live_cam.js"></script>
 
 </body>
 </html>
