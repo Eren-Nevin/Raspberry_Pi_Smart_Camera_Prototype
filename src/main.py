@@ -1,9 +1,14 @@
 from pprint import pprint
 import asyncio
 import sys
+from PIL import Image
+from io import BytesIO
+
 
 from signaling import WebsocketSignaling
 from live_cam import LiveCam
+
+from webcam_face_detect import RPiFaceDetector, read_known_faces_from_directory
 
 # TODO: Add Graceful Exit
 
@@ -15,6 +20,7 @@ def getDUID():
 
 SOCKET_IO_NAMESPACE = '/live_cam'
 SOCKET_IO_SERVER_ADDRESS = f"https://{sys.argv[1]}"
+
 signaling = WebsocketSignaling(SOCKET_IO_SERVER_ADDRESS,
                                    SOCKET_IO_NAMESPACE)
 
@@ -22,7 +28,10 @@ live_cam = LiveCam()
 
 async def new_webrtc_offer_received(uid: int, d_uid: int, sdp: str, con_type: str):
 
-    live_cam.setup()
+    if live_cam.is_running():
+        await live_cam.stop()
+
+    live_cam.start()
 
     # if pc:
     #     await pc.close()
@@ -35,6 +44,27 @@ async def new_webrtc_offer_received(uid: int, d_uid: int, sdp: str, con_type: st
         await live_cam.answer_connection_offer(sdp, con_type)
 
     await signaling.send_answer(getUID(), getDUID(), answer_sdp, answer_con_type)
+
+    # await asyncio.sleep(10)
+
+    # await live_cam.stop()
+
+    # face_detector = RPiFaceDetector("640x480")
+    # face_detector.start_camera()
+    # rgb_small_frame = face_detector.capture_frame()
+    # found_face_locations, found_face_encodings = face_detector.detect_faces(rgb_small_frame)
+
+    # known_faces = read_known_faces_from_directory('./known_faces')
+
+    # # video_bytes_io = BytesIO()
+    # # img_bytes_io = BytesIO()
+    # # img = Image.fromarray(rgb_small_frame)
+    # # img.save("pic.jpg")
+
+    # found_faces = face_detector.recognize_faces(known_faces,
+    #                                             found_face_encodings)
+     
+    # print(found_faces[0].name)
 
 
 async def signaling_on_connect():

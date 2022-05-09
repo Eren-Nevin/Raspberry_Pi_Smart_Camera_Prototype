@@ -26,12 +26,34 @@ class LiveCam:
         self.use_data_channel = False
         self.speaker_audio_format = speaker_audio_format
         self.use_native_audio_playing = use_native_audio_playing
+        self.state = 'created'
 
-    def setup(self):
-            self._start_speaker_player_process()
-            self._setup_rtc_handler()
-            self._create_media_streams()
-            self._setup_rtc_tracks()
+    def is_running(self):
+        if self.state == 'started':
+            return True
+        return False
+
+    def start(self):
+        self._start_speaker_player_process()
+        self._setup_rtc_client()
+        self._create_media_streams()
+        self._setup_rtc_tracks()
+        self.state = 'started'
+
+    # BUG: if browser is rapidly refereshed (~<5 seconds) several times and
+    # calls each time, after third or fourth call, it sigaborts. I think its a
+    # problem with not freeing or double freeing the rtc_client
+    async def stop(self):
+        # TODO: Does termination kill the process?
+        self.external_media_player_process.terminate()
+        self.external_media_player_process.wait()
+        self.video_stream.stop()
+        self.camera.video.stop()
+        self.mic_stream.stop()
+        await self.rtc.stop()
+        self.state = 'stopped'
+        print("Live Cam Stopped")
+
 
     async def answer_connection_offer(self, sdp: str, con_type: str):
             answer_sdp, answer_con_type =\
@@ -60,9 +82,10 @@ class LiveCam:
                                                   )
 
 
-    def _setup_rtc_handler(self):
+    def _setup_rtc_client(self):
         print("New Offer Received")
         rtc = RTCClient()
+        rtc.start()
         pc = rtc.get_peer_connection()
 
         def on_ice_connection_state_change():
@@ -80,15 +103,33 @@ class LiveCam:
 
         async def on_connectionstatechange():
             pprint(f"Connection state is {pc.connectionState}")
-            if pc.connectionState == "failed":
-                if pc:
-                    await pc.close()
-                    #TODO: On stop, stop everything including camera, mic and
-                    # speakers
-                    # if use_speaker and recorder:
-                    #     recorder.stop()
+            # TODO: Add other connection states
+            if pc.connectionState == 'failed':
+                self.external_media_player_process.terminate()
+                self.external_media_player_process.wait()
+                self.state = 'failed'
+                # self.video_stream.stop()
+                # self.camera.video.stop()
+                # self.mic_stream.stop()
+                # await pc.close()
+                #TODO: On stop, stop everything including camera, mic and
+                # speakers
+                # if use_speaker and recorder:
+                #     recorder.stop()
 
         rtc.add_connection_state_change_handler(on_connectionstatechange)
+
+        def on_data_channel_open(channel):
+            print("Data channel openned")
+            with open('video.mp4', 'rb') as footage:
+                footage_bytes = footage.read(-1)
+                self.rtc.send_data_to_channel(footage_bytes)
+
+        def on_data_channel_message(message):
+            print(message)
+
+        rtc.add_data_channel_handler(on_data_channel_open,
+                                     on_data_channel_message)
 
         self.rtc = rtc
 
@@ -98,22 +139,21 @@ class LiveCam:
     # device.
     # Note that the buffered=False is the reason we can stream virtually lag free
     def _create_camera_video_stream_track(self, resolution: str):
-        global webcam
         options = {"framerate": "30", "video_size": resolution, 'input_format':
                    'h264', 'vcodec': 'copy'}
         if platform.system() == "Darwin":
-            webcam = MediaPlayer(
+            self.camera = MediaPlayer(
                 "default:none", format="avfoundation", options=options
             )
         elif platform.system() == "Windows":
-            webcam = MediaPlayer(
+            self.camera = MediaPlayer(
                 "video=Integrated Camera", format="dshow", options=options
             )
         else:
-            webcam = MediaPlayer("/dev/video0", format="v4l2", options=options)
+            self.camera = MediaPlayer("/dev/video0", format="v4l2", options=options)
         # webcam = MediaPlayer("/dev/video0", format="v4l2", options=options)
         relay = MediaRelay()
-        return relay.subscribe(webcam.video, buffered=False)
+        return relay.subscribe(self.camera.video, buffered=False)
 
     # Capture camera mic to create a media track
     def _create_microphone_media_stream_track(self):

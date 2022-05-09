@@ -4,7 +4,9 @@ from aiortc.rtcconfiguration import RTCConfiguration, RTCIceServer
 from aiortc.contrib.media import  MediaPlayer, MediaRelay
 from aiortc.contrib.media import MediaRecorder
 
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
+
+from aiortc.rtcdatachannel import RTCDataChannel
 
 class RTCClient:
     GOOGLE_ICE_SERVER = RTCIceServer('stun:stun.l.google.com:19302')
@@ -22,15 +24,21 @@ class RTCClient:
                  ice_turn_servers: List[RTCIceServer] = [GOOGLE_ICE_SERVER],
                  rtc_config: Optional[RTCConfiguration] = None):
         if rtc_config:
-            config = rtc_config
+            self.config = rtc_config
         else:
-            config = RTCConfiguration(ice_turn_servers)
+            self.config = RTCConfiguration(ice_turn_servers)
 
-        self.pc = RTCPeerConnection(config)
+        self.data_channel = None
 
 
     def get_peer_connection(self):
         return self.pc
+
+    def start(self):
+        self.pc = RTCPeerConnection(self.config)
+
+    async def stop(self):
+        await self.pc.close()
 
     # Note that the handler is triggered once the data channel is opened and it
     # has access to a single parameter 'channel' which is the channel object.
@@ -40,8 +48,14 @@ class RTCClient:
     # @channel.on("message")
     # def on_message(message):
     #     pprint(f"Data Message: {message}")
-    def add_data_channel_handler(self, on_open):
-        self.pc.on("datachannel", on_open)
+    # TODO: Add a on close event handler
+    def add_data_channel_handler(self, on_open, on_message):
+        def on_channel_opened(channel: RTCDataChannel):
+            self.data_channel = channel
+            on_open(channel)
+            channel.on('message', on_message)
+
+        self.pc.on("datachannel", on_channel_opened)
 
 
     # Examples of handlers
@@ -104,6 +118,11 @@ class RTCClient:
 
     def add_track(self, track: MediaStreamTrack):
         return self.pc.addTrack(track)
+
+    # Note that the data should be serialized as bytes or string before sending
+    def send_data_to_channel(self, data: Union[str, bytes]):
+        if self.data_channel:
+            self.data_channel.send(data)
 
     # It taks sdp and connection type of offer as strings and returns the same
     # for answer
