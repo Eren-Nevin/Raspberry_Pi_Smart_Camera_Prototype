@@ -20,6 +20,7 @@ class Face:
         self.uid = uid
         self.face_encoding = face_encoding
         self.isKnown = isKnown
+        self.name = 'Unknown'
 
 class KnownFace(Face):
     def __init__(self, uid: int, face_encoding, name: str, pic_path: str=''):
@@ -98,16 +99,23 @@ class FaceDetector:
 class RPiFaceDetector:
     def __init__(self, resolution:str):
         self.width, self.height = map(int, resolution.split("x"))
+        self.output = np.empty((self.height, self.width, 3), dtype=np.uint8)
+        self.detector = FaceDetector()
+        self.is_running = False
+
+    def initialize_camera(self):
         self.camera = picamera.PiCamera()
         self.camera.resolution = (self.width, self.height)
-        self.output = np.empty((self.height, self.width, 3), dtype=np.uint8)
-
-        self.detector = FaceDetector()
+        self.is_running = True
 
     def start_camera(self):
         self.camera.start_preview()
         self.camera.preview.window = 0, 0, 0, 0
         sleep(2)
+
+    def stop_camera(self):
+        self.camera.close()
+        self.is_running = False
 
     def capture_frame(self):
         # Grab a single frame of video

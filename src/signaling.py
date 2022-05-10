@@ -32,7 +32,7 @@ class WebsocketSignalingBase:
         self.sio.on('connect_error', on_connect_error, self.namespace)
         self.sio.on('disconnect', on_disconnect, self.namespace)
 
-    def add_handler(self, topic:str, on_message):
+    def add_topic_handler(self, topic:str, on_message):
         self.sio.on(topic, on_message, self.namespace)
 
     async def connect_and_wait(self):
@@ -48,6 +48,10 @@ class WebsocketSignaling(WebsocketSignalingBase):
     def __init__(self, server_address: str, namespace: str):
         super().__init__(server_address, namespace)
 
+    def add_switch_mode_handler(self, modeHandler):
+        self.add_topic_handler('switch_mode', modeHandler)
+
+
     async def send_answer(self, uid: int, duid: int, sdp: str, con_type: str):
         my_answer = OfferOrAnswer(uid, duid, sdp, con_type)
         await self.send(ANSWER_TOPIC, asdict(my_answer))
@@ -60,4 +64,5 @@ class WebsocketSignaling(WebsocketSignalingBase):
                                offer['sdp'],
                                offer['con_type'])
 
-        self.add_handler(OFFER_TOPIC, offer_handler)
+
+        self.add_topic_handler(OFFER_TOPIC, offer_handler)

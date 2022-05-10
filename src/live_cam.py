@@ -56,9 +56,10 @@ class LiveCam:
 
 
     async def answer_connection_offer(self, sdp: str, con_type: str):
-            answer_sdp, answer_con_type =\
+        print("New Offer Received")
+        answer_sdp, answer_con_type =\
                 await self.rtc.answer_connection_offer(sdp, con_type)
-            return answer_sdp, answer_con_type
+        return answer_sdp, answer_con_type
 
     # Currently we can't play audio frames directly, if we could, we change this to
     # True and thus not need to create MediaRecorder object and ffplay process
@@ -83,7 +84,6 @@ class LiveCam:
 
 
     def _setup_rtc_client(self):
-        print("New Offer Received")
         rtc = RTCClient()
         rtc.start()
         pc = rtc.get_peer_connection()
