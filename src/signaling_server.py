@@ -48,7 +48,7 @@ def index():
     # return "Hello World"
 
 @app.route('/live_cam.js')
-def serve_main_js():
+def serve_live_cam_js():
     m_response = send_file('./live_cam.js', etag=False)
     m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
     m_response.headers["Expires"] = '0'
@@ -63,9 +63,17 @@ def serve_signaling_js():
     m_response.headers["Pragma"] = "no-cache"
     return m_response
 
-@app.route('/footage.js')
+@app.route('/sent_footage.js')
 def serve_footage_js():
-    m_response = send_file('./footage.js', etag=False)
+    m_response = send_file('./sent_footage.js', etag=False)
+    m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    m_response.headers["Expires"] = '0'
+    m_response.headers["Pragma"] = "no-cache"
+    return m_response
+
+@app.route('/main.js')
+def serve_main_js():
+    m_response = send_file('./main.js', etag=False)
     m_response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
     m_response.headers["Expires"] = '0'
     m_response.headers["Pragma"] = "no-cache"
@@ -84,6 +92,11 @@ try:
         print("Connection Disconnected")
         leave_room('public')
 
+    @socketio.on('switch_mode', namespace=f"/{socket_io_namespace}")
+    def switch_mode(message):
+        pprint(message)
+        emit('camera_mode', message, to='public')
+
     @socketio.on('offer', namespace=f"/{socket_io_namespace}")
     def handle_offer(message):
         pprint(message)
@@ -98,6 +111,21 @@ try:
     def handle_ice_candidate(message):
         pprint(message)
         emit('new_ice_candidate', message, to='public', include_self=False)
+
+    # @socketio.on('face_detection', namespace=f"/{socket_io_namespace}")
+    # def handle_face_detection(message):
+    #     pprint(message)
+    #     emit('new_face_detection_request', message, to='public', include_self=False)
+
+    @socketio.on('face_detected', namespace=f"/{socket_io_namespace}")
+    def handle_face_detected(message):
+        pprint(message)
+        emit('new_face_detected', message, to='public', include_self=False)
+
+    @socketio.on('switch_mode', namespace=f"/{socket_io_namespace}")
+    def handle_face_detected(message):
+        pprint(message)
+        emit('switch_mode', message, to='public', include_self=False)
 
 except Exception:
     print("Exception")

@@ -1,5 +1,3 @@
-import { Signaling } from "./signaling.js";
-
 const STUN_SERVERS = ["stun:stun.l.google.com:19302"];
 const OPEN_RELAY_SERVERS = [
   {
@@ -22,19 +20,22 @@ const OPEN_RELAY_SERVERS = [
   },
 ];
 
-function readDestUID() {
-  return 2;
-}
 
 const videoElement = document.getElementById("video");
-document.getElementById("call-button").addEventListener("click", callPeer);
 
-let signaling = null;
 let active_pc = null;
 let sent_offer = null;
 let data_channel = null;
-
 let localStream = null;
+let sendOffer = null
+
+function initialize(sendOfferFunc){
+  active_pc = null;
+  data_channel = null;
+    sent_offer = null;
+    localStream = null;
+    sendOffer = sendOfferFunc
+}
 
 // This is here to cancel ice trickling by waiting for all candidates to be
 // gathered before creating the offer. We're doing this because aiortc doesn't
@@ -57,6 +58,7 @@ async function waitForIceGathering() {
   await promise;
   return;
 }
+
 async function handleNegotiationNeededEvent() {
   console.log("Negotiation Needed");
   if (sent_offer) {
@@ -79,11 +81,13 @@ async function handleNegotiationNeededEvent() {
     await waitForIceGathering();
 
     console.log("-> Sending offer to remote peer");
-    signaling.sendOffer(
-      readDestUID(),
-      active_pc.localDescription.sdp,
-      active_pc.localDescription.type
-    );
+      sendOffer(active_pc.localDescription.sdp,
+          active_pc.localDescription.type);
+    // signaling.sendOffer(
+    //   readDestUID(),
+    //   active_pc.localDescription.sdp,
+    //   active_pc.localDescription.type
+    // );
 
     sent_offer = new_offer;
   } catch (error) {
@@ -173,12 +177,12 @@ function onDataMessage(evt) {
 
 function onDataMessageOpen() {
   console.log(`Data Channel: Open`);
-  // TODO: Remove Heartbeat
-  setInterval(() => {
-    if (data_channel) {
-      data_channel.send("Heartbeat");
-    }
-  }, 5000);
+  // TODO: Heartbeat had problems with stopping live_cam.js
+  // setInterval(() => {
+  //   if (data_channel) {
+  //     data_channel.send("Heartbeat");
+  //   }
+  // }, 5000);
 }
 
 function onDataMessageClose() {
@@ -248,20 +252,5 @@ async function closeRTCConnection() {
   }
 }
 
-async function start() {
-  signaling = new Signaling();
-  active_pc = null;
-  data_channel = null;
-  signaling.addConnectionStateChangeHandlers(
-    () => {
-      console.log("Connected");
-    },
-    () => {},
-    () => {}
-  );
+export { callPeer, onAnswerReceived, initialize }
 
-  signaling.addNewAnswerHandler(onAnswerReceived);
-  signaling.connect();
-}
-
-start();

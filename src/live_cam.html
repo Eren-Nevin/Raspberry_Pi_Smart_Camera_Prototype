@@ -29,17 +29,21 @@
 <body>
 
     <button id="call-button">Call</button>
+    <button id="detect-button">Detect</button>
 
 <div id="media">
     <h2>Live-View</h2>
     <audio id="audio" autoplay="true"></audio>
     <video id="video" autoplay="true" playsinline="true"></video>
-    <video id="footage"></video>
+    <!-- <video id="footage"></video> -->
+    <img id="footage"></video>
+    <p id='footage-name'></p>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" crossorigin="anonymous"></script>
 <script type="module" src="signaling.js"></script>
 <script type="module" src="live_cam.js"></script>
+<script type="module" src="main.js"></script>
 
 </body>
 </html>
