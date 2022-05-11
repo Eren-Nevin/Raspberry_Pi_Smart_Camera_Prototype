@@ -29,7 +29,7 @@ let data_channel = null;
 let localStream = null;
 let sendOffer = null
 
-function initialize(sendOfferFunc){
+function initializeLiveCam(sendOfferFunc){
   active_pc = null;
   data_channel = null;
     sent_offer = null;
@@ -197,6 +197,7 @@ async function callPeer() {
       // want to send an offer, so we reset it back to null
       sent_offer = null;
     }
+      videoElement.style.display = '';
     // await start();
     await createPeerConnection();
     console.log("RTC Connection Created To Offer");
@@ -226,6 +227,7 @@ async function callPeer() {
   }
 }
 
+
 async function onAnswerReceived(uid, sdp, con_type) {
   try {
     console.log(`Answer Received From ${uid}`);
@@ -239,18 +241,22 @@ async function onAnswerReceived(uid, sdp, con_type) {
   }
 }
 
-async function closeRTCConnection() {
+async function stopLiveCam() {
   try {
+      videoElement.style.display = 'none';
     if (data_channel !== null) {
       data_channel.close();
+        data_channel = null;
     }
     if (active_pc !== null) {
       await active_pc.close();
+        active_pc = null;
+        sent_offer = null;
     }
   } catch (error) {
     alert(error);
   }
 }
 
-export { callPeer, onAnswerReceived, initialize }
+export { callPeer, onAnswerReceived, initializeLiveCam,stopLiveCam}
 

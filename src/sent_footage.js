@@ -2,6 +2,15 @@ const videoElement = document.getElementById("video");
 const imageElement = document.getElementById("footage");
 const textElement = document.getElementById('footage-name')
 
+function initializeFootage(){
+    imageElement.style.display = ''
+    textElement.style.display = ''
+}
+
+function stopFootage(){
+    imageElement.style.display = 'none'
+    textElement.style.display = 'none'
+}
 
 function onFootageReceived(footage){
     // TODO: Select based on mimetype
@@ -33,5 +42,5 @@ function loadArrayByteAsVideo(arrayBuffer, mimeType, videoElement){
     videoElement.play()
 }
 
-export {onFootageReceived}
+export {onFootageReceived, initializeFootage, stopFootage}
 
