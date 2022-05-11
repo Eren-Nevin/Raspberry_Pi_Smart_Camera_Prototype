@@ -38,15 +38,15 @@ async def switch_modes(mode):
     if mode == 'Live' and current_mode != 'Live':
             if current_mode == 'Detect':
                 face_detector.stop_camera()
-            current_mode = 'Live'
             start_live_cam()
     elif mode == 'Detect' and current_mode != 'Detect':
             if current_mode == 'Live':
                 await stop_live_cam()
-            current_mode = 'Detect'
             await start_detector()
 
 def start_live_cam():
+    global current_mode
+    current_mode = 'Live'
     live_cam.start()
 
 async def stop_live_cam():
@@ -63,6 +63,8 @@ async def new_webrtc_offer_received(uid: int, d_uid: int, sdp: str, con_type: st
     await signaling.send_answer(getUID(), getDUID(), answer_sdp, answer_con_type)
 
 async def start_detector():
+    global current_mode
+    current_mode = 'Detect'
     # TODO: Add superloop
     print("Face detection starting")
 
@@ -126,7 +128,7 @@ async def start_client():
 
     signaling.add_switch_mode_handler(switch_modes)
 
-    # start_live_cam()
+    start_live_cam()
 
     await signaling.connect_and_wait()
 
