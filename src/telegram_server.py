@@ -9,9 +9,9 @@ from pyrogram.types.messages_and_media.message import Message
 from user_command_handler import handle_command
 
 # THIS IS THE BOT TOKEN
-token = '5346807516:AAFyn5Uij3Al2gtQ3mHZ1Yp8DrDzwNslP1E'
-api_id = 19463946
-api_hash = 'c57f3113a0f5e54d603f838725e9f754'
+token = ''
+api_id = 55555
+api_hash = ''
 
 app = Client(
     'smart_kamera_bot',
